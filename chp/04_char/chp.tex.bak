@@ -1,0 +1,217 @@
+\documentclass[../../main.tex]{subfiles}
+
+\graphicspath{
+	{"./img/04_char/"}      % for main
+	{"../../img/04_char/"} % for subfile
+}
+
+\begin{document}
+
+\section{Readout Chip Characterization}
+Characterization of electronics devices refers to the determination of characteristic properties under a variety of conditions. If a large number of similar devices are characterized the measured values of properties make up a distribution. Once this distribution has been found properties can be prioritized and thresholds can be set to build a quality control framework for accepting and rejecting newly produced devices.\\
+\\
+The design of the two HGCAL endcaps includes a total of 28'056 sensors containing about 6'000'000 Si channels that each need to be read out. Therefore, an amount of 100'146 HGCROCs must be produced, mounted and tested. \cite{si_rep, sipm_rep} While the mounting and testing will take place at six mechanical assembly centers (MACs) a precise framework of quality control based on the requirements needed in HGCAL is lacking. The HGCROC characterization efforts are directed to change that. By testing a significant amount of chips (240 so far) in isolation, on PCBs and on PCBs attached to sensors characterization data has been taken and quality control criteria are being developed.
+
+\subsection{Process variation}
+Process variation describes the naturally occuring variation of physical properties such as length, width and oxide thickness of semiconductor devices. \cite{acm} This variation causes measurable differences in performance between components that have been produced in the same way (e.g. same batch). Although digital circuits are affected as well, the effect on analog components is more significant \cite{pd} due to its operation in a continuous range.\\
+\\
+The HGCROC has the task to amplify naturally weak occuring signals caused by particles interacting with sensor material to a accurate and measurable one. To achieve this goal the ROC includes for each read-out channel several analog components that are termed \textit{the analog front-end}. The components of the analog front-end together with the calibration circuit (which is shared amongst channels) can be seen in figure \ref{fig:analogFE}. Process variation, the requirement of precision and the amount of analog components inside the ROC motivate the characterization efforts.
+
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=6cm]{roc3.pdf}
+		\caption{Analog front-end of HGCROC}
+		\label{fig:analogFE}
+	\end{center}
+\end{figure}
+
+\subsection{Strategy}
+Besides taking data for characterization another major focus lies on the accumulation and transfer of knowledge attained from online analysis (at the time of testing) to the chip designers. As the HGCROC is developed in three iterations the generated knowledge has a direct impact on design decisions of the subsequent generation. At the time of writing the second generation of HGCROCs was subject to tests. The online analysis is performed to test aspects of the chip that are of immediate interest and allow a direct evaluation about the functioning of a chip. These tests are carried out in all stages of testing. In general single chip, Hexaboard and module tests form three distinct stages of testing to assure quality along the different production steps.\\
+\\
+Additionally, the chip designers built several digital-to-analog converters (DACs) on critical analog components into the ROC in order to allow for post-production tuning. Some of these handles can be set per half (global) while others are set per channel (local). The DACs can be programmed via specific configuration commands that usually change a supplied voltage to a specific circuit element. The handles postfixed by \textit{trim} in figure \ref{fig:analogFE} represent local handles while all others are global.
+
+\subsubsection{Hardware}
+Due to the three testing stages two different test systems have been developed. For single chip tests the ZIF socket board, shown in figure \ref{fig:rocchar} is used. The centeral piece of the ZIF socket board is the black ZIF socket sledge that allows to insert a ROC and to press the pins onto metal contacts that establish an electrical connection. Furthermore, the board includes two connectors (at the bottom of the figure) that breakout specific pins of the ROC to external devices.\\
+\begin{figure}[htp]
+	\centering
+	\subfloat[][ZIF-Socket board]{\includegraphics[height=5.5cm]{rocchar.png}\label{fig:rocchar}}
+	\hspace{5mm}
+	\subfloat[][Trophyboard with Hexaboard]{\includegraphics[height=5.5cm]{trophy.jpeg}\label{fig:trophy}}
+	\caption{Test boards attached to Hexacontroller} \label{fig:hw}
+\end{figure}
+For Hexaboard and module tests the test system depicted in figure \ref{fig:trophy} is used. The Hexaboard is attached via three connectors (not seen here) to an intermediate board referred to as \textit{Trophyboard}, which allows to read out the three (six for high density) chips mounted on low density Hexaboards. The Trophyboard mounts six ADCs for reading out the same pins that the ZIF socket board provided by the two break-out connectors. Both Trophyboard and ZIF socket board are in turn connected to a control board called \textit{Hexacontroller}. The Hexacontroller mounts a Trenz TE0820 System on Module integrating a Xilinx Zynq UltraScale+ FPGA and processing unit. The processing unit runs the Linux distribution CentOS while the FPGA is programmed via a customly designed firmware to enable high-speed communication to the testing boards. The high-speed communication takes place at the same clock rate of $40MHz$ as the real system would under the LHC clock. Once the raw data becomes available the FPGA acquires and stores it at a specific address which is accessible via the operating system for further redirection.
+
+\subsubsection{Software}\label{sec:sw}
+The HGCROC provides two independent interfaces for chip configuration and data acquisition. To configure the parameters of the analog front-end so called \textit{Slow Control} messages are send via the inter-integrated-circuit ($I^2C$) bus to the chip. For further information on the $I^2C$ bus and protocol the reader may refer to \cite{i2c}. To setup and trigger data acquisition \textit{Fast Commands} can be send via the Advanced eXtensible Interface ($AXI$), \cite{axi} while the FPGA is polling the data links and starts the acquisition as soon as data becomes available. Due to the separation and independence of the two interfaces software development  was carried out in parallel. A schematic overview of the software setup can be seen in figure \ref{fig:sw}. Measurement, data storage and online analysis is triggered by an external client computer via ethernet.\\
+\\
+Software development efforts were directed by three overarching requirements:
+\begin{enumerate}
+	\item Remote operation
+	\item Compatibility with all testing systems
+	\item Performance and fault tolerance
+\end{enumerate}
+The focus of this thesis lies on configuration software. In the following development and engineering decisions will be discussed in detail.
+
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=4cm]{sw.png}
+		\caption{Software architecture of test systems}
+		\label{fig:sw}
+	\end{center}
+\end{figure}
+
+% \subsubsection*{\underline{Configuration}}\label{sec:conf}
+In order to characterize and tune components of the analog front-end internal DACs need to be set. The ROC provides eight I$^2$C addresses of which four (R0 to R3) grant access to setting the values of the DACs. As seen in figure \ref{fig:i2c_reg} writing into registers R0 and R1 form a 16-bit address pointer that references a specific register in HGCROC memory. After the pointer is set writing a desired value byte to R2 fill the referenced register with the specified value. Similarily, writing the value byte to R2 or R3 would write to the same location but increment the address pointer by one after the write, such that another write to R3 would fill the register at the successive address. Thus, taking data for characterization consists of a cycles of configuration and data acquisition (usually of several events).\\
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=6cm]{i2c_reg.png}
+		\caption{Table of I$^2$C registers and their function. Figure taken from \cite{tdr_roc}}
+		\label{fig:i2c_reg}
+	\end{center}
+\end{figure}
+In the following is shown how the configuration software satisfies the requirements stated in \ref{sec:sw}.\\
+\\
+\textbf{Remote operation} is facilited via a TCP socket established by the embedded networking library ZeroMQ \cite{zmq}. The Hexacontroller running the configuration software acts as server while the remote computer initializing tests is the client (figure \ref{fig:sw}). Control flow between client and server is handled via the request/reply pattern. The client sends a request for configuration which the server handles by starting a new thread for each ROC to configure. When each thread finishes succussfully the server sends a reply signaling that it is ready for configuration again. If an error occurs during the handling of the request the client is notified with an error code in the reply.\\
+Since it would be cumbersome for the user operating the client computer to express characterization tests as a sequence of registers and value bytes to be programmed on the chip the configuration software includes a conversion table of human-readable parameter names to register addresses, referred to as \textit{Register Map}. This map enables the user to write structured documents as \textit{yaml-files} which are then sent to the server. As specific parameter values can span several registers while other values only occupy a few bits a routine was created to construct a register's value byte by information from the register map. In case a register's value cannot be inferred by the information available at a point in time a read is required in order to not override information.\\
+\\
+\textbf{Compatibility with all test systems} is assured by an automatic detection routine, scanning all available I$^2$C busses for responding ROCs. As depicted in figure \ref{fig:i2c_reg} one chip will show up with eight consecutive I$^2$C addresses on a bus. The amount of ROCs found on the busses determines the platform and thereby the test system that is used: One ROC for single-chip, two ROCs for scintillation boards, three ROCs for low density Hexaboards and six chips for high density Hexaboards. All test boards are designed in a way that the first of the eight consecutive I$^2$C addresses has a unique value. This allows for example in Hexaboard systems to detect and correct for the state of rotation. This is accomplished by defining a mapping of $correct$ rotation between ROC address and bus ID which in turn depends on the pin assignment defined in the firmware and thereby does not change. However, since the configuration software is independent of the software for data acquisition, the latter needs to be notified about the state of rotation as well.\\
+\\
+The requirement of \textbf{performance} has been achieved by avoiding redundant I$^2$C transactions and caching. The most significant performance boost in terms of redundant bus transactions came by saving the most recent written address and to reuse it in subsequent read/write operation. Many operations use partially overlapping or identical registers R0 and R1 which can be exploited by partially (\textit{lazily}) updating the state of these registers. This mechanism was further enhanced by sorting the operations of a configuration request by similar addresses before writing and using the burst-write register R3 for truly consecutive addresses. The results of these enhancements on I$^2$C transactions can be seen in table \ref{tab:bus}.
+\begin{table}[htp]
+\centering
+	\caption{Amount of bus read/write operations for different configuration files}
+	\begin{tabular}{ l || c | c }
+		\textbf{Config file} & \textbf{R/W (not enhanced)} & \textbf{R/W (enhanced)}\\
+		\hline
+		init.yaml	& 708 & 155\\
+		scan\_pedDAC.yaml, 32x & 16512 & 5250\\
+		scan\_calibdac.yaml, 41x & 984 & 249\\
+		config\_samplingscan.yaml, 16x & 16224 & 397\\
+		scan\_vrefinv.yaml, 30x & 1440 & 361\\
+		deconfig\_samplingscan.yaml & 1008 & 104
+	\end{tabular}
+	\label{tab:bus}
+\end{table}
+Another bottleneck was discovered in converting between parameter and register information. Since the register map used for conversion contains about 2500 entries continuous table lookups turned out to consume a significant amout of processing time. By closer inspection of commonly used configuration files and their respective registers it became clear that only a small subset of registers occur often. By implementing a cache in between the conversion the total runtime for configuration was reduced by a factor of about two.\\
+\\
+In terms of \textbf{fault tolerance} another type of cache was developed, termed \textit{Write cache} (figure \ref{fig:write_cache}). Besides storing all address-value pairs that have been read or written since initialization the cache avoids redundant write operations. If an error in one of the I$^2$C transactions occurs a reset of the I$^2$C state machine and the ROC registers is issued before the chip is reconfiguring from the last known state saved in the Write cache. After this procedure the last configuration sent from the client is repeated.
+
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=7cm]{write_cache.png}
+		\caption{Write cache saves state and avoids redundant writes}
+		\label{fig:write_cache}
+	\end{center}
+\end{figure}
+
+% \subsubsection*{\underline{Data acquisition}}\label{sec:daq}
+
+\subsection{Tests and results}
+In order to characterize the different components of the analog front-end several procedures have been developed and tested. Besides generating characterization data these procedures include online analysis to give fast feedback which proved to be advantageous in understanding the general behavior of the components as well as the interdependence between components of the analog front-end. The procedures can be controlled via a client computer that communicates with the software suite eluded to in section \ref{sec:sw}. The procedures are planned to be used in the final chip, Hexaboard and module tests in the MACs. As the focus of this thesis lies on the implementation of procedures analysis will only be discussed briefly.
+
+\subsubsection{Power consumption}
+Measuring power consumption gives insight into the functioning of a chip. After powering on a list of default parameters is loaded from permanent memory into the digital and analog parts. In this state a ROC consumes about $2.9W$. Chips that showed a drastic deviation from this value (by about $0.3-0.5W$) did not respond to $I^2C$ communication and were therefore declared malfunctioning. Characterization of power consumption allows to reject chips in an early testing stage which is advantageous when, at a later point in time, thousands of chips need to be tested.\\
+\\
+For single-chip and multi-chip systems there are two different ways to measure power consumption:
+\begin{itemize}
+	\item After connecting the single-chip characterization board (ZIF socket board) to a power supply unit, a constant voltage of 3.3V is being supplied and the drawn current is measured. The power consumption is calculated by $P = U \cdot I$, which includes the current drawn by the board itself.
+	\item For multi-chip test systems the current drawn is read out via six current sensing amplifiers (INA250A2\cite{ina250}) positioned on the interfacing Trophyboard. Each sector of the Hexaboard is connected to two sensing amplifiers for measuring the consumption of the analog and digital parts separately. The INA250A2 is designed with a gain of $G=500mV /A$ and supplied with a voltage of $V_{sup,dig} = 1.2V$ for the digital part and $V_{sup,ana} = 1.5V$ for the analog part. The output signal of the sensing amplifiers is subsequently converted into a digital signal by ADCs\cite{schematic:trophy} which are read out by the Hexacontroller via $I^2C$. Power consumption is calculated from the ADC output $V_{INA}$ (automatically converted by the Linux $I^2C$ interface driver) as $P = V_{sup}\cdot V_{INA} / G$. The total power consumption of the chip is the sum of consumptions from the digital and analog parts. Typically $P_{ana} \approx 2.5W$ and $P_{dig} \approx 0.5W$ for low density Hexaboards (one chip per sector) and twice these amounts for high density Hexaboards (two chips per sector) after power-on.
+\end{itemize}
+\subsubsection{Probe points}
+The ROC is designed to allow reading out several direct current (DC) probe points located at critical components in the circuitry. Characterizing these DC levels across chips (and halves) helps the chip designers to better understand the impact process variation has on the chip design. Due to different architectures for single- and multi-chip systems there are two different ways to measure the probe points:
+\begin{itemize}
+	\item Single-chip boards expose two ports (one per half) that provide two pins each (ProbeDC1 and ProbeDC2) for an external device to read from. The probe points must first be configured and can then be read out, one at a time.
+	\item Hexaboards break-out the ROC's ProbeDC pin per sector to the Trophyboard. The Trophyboard includes one ProbeDC ADC per sector, accessible to the Hexacontroller via $I^2C$. Since the halves cannot be read out in parallel as in the case of single-chip boards, care must be taken while configuring the chip. For low density Hexaboards the probe points must be read out sequentially first for one half, then deactivated and afterwards read out for the other half. For high density Hexaboards (two chips per sector) this procedure must be done sequentially for both chips of a sector.
+\end{itemize}
+
+The results of measuring the probe points on different chips can be seen in figure \ref{fig:probeDC}. The variation of some points is stronger than for others. Especially the TDCs (in the digital half) and the reference voltage of the pre-amplifier and its feedback circuit (in the analog half) seem to be particularly effected by process variation.\\
+
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=8cm]{probedc.png}
+		\caption{ProbeDC measurements for one half across chips. Figure taken from \cite{al}}
+		\label{fig:probeDC}
+	\end{center}
+\end{figure}
+Another probe point called $CTEST$ is used to characterize the internal charge injection DAC termed $CalDAC$. $CalDAC$ is used in most of the characterization tests and has thereby an implicit impact on the measurements. Therefore it makes sense to characterize $CalDAC$ as well by measuring voltages that are produced after setting particular DAC values. Voltages as functions DAC values are expected to progress linearly with a spread in slope and offset between chips as result of process variation. The results in figure \ref{fig:intCtest} show a more coherent behavior for lower $CalDAC$ values. The offset at $CalDAC=0$ is almost identical between chips, however a dispersion in slope becomes apparent when looking at larger $CalDAC$ values.\\
+\\
+To accomplish the measurement of $CalDAC$, the switches $IntCtest$ and $ExtCtest$ must be closed, while switches $HighRange$ and $LowRange$ are open (figure \ref{fig:calibCirc}). By triggering the $STROBE$ (Fast Command) signal $CTEST$ can be read out either via an external device over the $CTEST$ pin (for single-chip) or via the $IntCtest$ ADC on the Trophyboard.
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=3cm]{calibration_circuit.pdf}
+		\caption{HGCROC Calibration circuit}
+		\label{fig:calibCirc}
+	\end{center}
+\end{figure}
+
+\begin{figure}[htp]
+		\makebox[\textwidth][c]{\includegraphics[width=13cm]{intctest.png}}
+		\caption{Voltage at $CTEST$ as function of $CalDAC$ value. Figure taken from \cite{al}}
+		\label{fig:intCtest}
+\end{figure}
+
+\subsubsection{Pedestals}\label{sec:ped}
+A pedestal is a DC level that is constant over time. Since real signals are always subject to noise the pedestal is defined as the average (equivalent) DC level of a signal. The baseline pedestal is the DC level that is measured when no charge is injected. It is noteworthy that this level does change when the calibration circuit is connected to a channel. Measuring the pedestals is referred to as \textit{pedestal run}. Since the two halves of a chip are physically separated the pedestals of channels in the halves tend to accumulate around different baseline pedestals. As can be seen in figure \ref{fig:pedRun1} there is a large inter-channel dispersion of about 100 ADC counts and a relatively high average pedestal of about 200 ADC counts. Both of these outcomes are not desired.
+
+\begin{figure}[htp]
+	\centering
+		\subfloat[a][Before pedestal trimming]{\includegraphics[height=7cm]{pedestal_run1.png}\label{fig:pedRun1}}\\
+		\subfloat[b][After pedestal trimming]{\includegraphics[height=7cm]{pedestal_run2.png}\label{fig:pedRun2}}\\
+		\caption{Measurement of baseline pedestals}
+\end{figure}
+
+To mitigate such large dispersion and offset the chip designers included the local shaper handle $Inv_{vref,trim}$ and the global shaper handles $Inv_{vref}$ and $Noinv_{vref}$. While the two global handles are discussed in \ref{sec:shaper} the local handles allows for adjusting each channel’s pedestal in 32 steps. The act of adjusting local pedestals is referred to as \textit{pedestal trimming} and the encapsulating procedure for finding the optimal pedestal per channel is called pedestal scan. Starting from each channel’s baseline pedestals and plotting the ADC response as a function of $Inv_{vref,trim}$, a horizontal line can be found that minimizes each channel’s pedestal distance by using one particular value for $Inv_{vref,trim}$. Instead of solving this problem analytically the horizontal line is set to begin at the channel with the highest baseline pedestal (at $Inv_{vref,trim}=0$). This is often a good enough approximation and requires less computation. A chip’s channel is defined \textit{untrimmable} if its function does not cross the horizontal line. In practice, untrimmable channels have not been observed in any of the tested chips.
+\begin{figure}[htp]
+		\makebox[\textwidth][c]{\includegraphics[width=19cm]{pedestal_scan_edited.png}}
+		\caption{ADC counts as a function of $Inv_{vref,trim}$}
+		\label{fig:pedScan}
+\end{figure}
+
+
+After the pedestals have been trimmed a pedestal run shows the effect (figure \ref{fig:pedRun2}). It is apparent that the inter-channel dispersion has been reduced from 100 ADC counts to about ten. It is desired to reach a similar pedestal level for each channel per half with low inter-channel dispersion.
+
+\subsubsection{Shapers}\label{sec:shaper}
+The shaper block is composed of three stages: A Sallen-Key shaper, the inverting and noninverting shapers and unity gain amplifiers (buffers). While the Sallen-Key shaper and the buffers optimize the signal-to-noise ratio \cite{tdr_roc} and provide a stable signal for ADCs to sample from, the inverting and noninverting shapers condition its dynamic range. After the signal leaves the Sallen-Key shaper it is fed to both inverting and noninverting shapers where it is being positively (negatively) amplified and further propagated as a differential input to the ADC. Since the shaper gain is susceptible to process variation it must be characterized. To tune the gain and mitigate inter-half variation in dynamic range, the chip designers built in two global DACs $Inv_{vref}$ and $NoInv_{vref}$. Together with the local shaper handle $Inv_{vref,trim}$ as mentioned in \ref{sec:ped} and the voltage level $V_{PA}$ provided by the pre-amplifier the magnitude of the output signal $S=\lvert S_{-} - S_{+}\rvert$ follows the relation:
+\begin{equation}
+	S_{+} = 3\cdot(Inv_{vref}-Inv_{vref,trim})-2V_{PA}
+\end{equation}
+\begin{equation}
+	S_{-} = 2V_{PA}-NoInv_{vref}
+\end{equation}
+To better understand the behavior of the shaper response in practice one can set all possible combinations of $Inv_{vref}$ and $NoInv_{vref}$ as a function of the differential output signal measured by the ADC. The result of such a scan on baseline pedestals can be seen in figure \ref{fig:vref2d}. A preceding pedestal trimming has been performed in order to mitigate the impact of inter-channel dispersion on the median ADC value calculated per half. As shown a horizontal shift in distribution becomes apparent which can be attributed to the physical separation of the two halves inside a chip's package. In order to maximize dynamic range a low output signal for baseline pedestals (light blue) is desired which would correspond to different $Inv_{vref}$ and $NoInv_{vref}$ settings between the halves. To see the upper end of the dynamic range the same scan can be performed but instead of baseline pedestals a charge is injected. The charge is chosen to be so large so it will saturate the ADCs, e.g. $CalDAC=1000$ using $LowRange$ capacitor. The existence of optimal global shaper settings (where all ADCs will saturate before $CalDAC=1000$) is assumed. The result is shown in figure \ref{fig:sat2d}. The difference between the plots \ref{fig:vref2d} and \ref{fig:sat2d} constitutes the dynamic range (figure \ref{fig:dyn_range2d}). Only values of dynamic range larger than 800 ADC counts are plotted to illustrate the existance of a blob of optimal global shaper settings which is situated at similar positions for both halves. In order to maximize dynamic range a global shaper setting from a central position of this blob is desired.
+
+\begin{figure}[htp]
+	\centering
+		\subfloat[a][No injection (baseline pedestals)]{\includegraphics[height=6cm]{vref2d.png}\label{fig:vref2d}}\\
+		\subfloat[b][With injection (ADC saturated)]{\includegraphics[height=6cm]{sat2d.png}\label{fig:sat2d}}\\
+		\subfloat[c][Difference between figures (a) and (b)]{\includegraphics[height=6.4cm]{dyn_range2d.png}\label{fig:dyn_range2d}}
+		\caption{Global shaper parameters as a function of ADC counts}
+\end{figure}
+
+\subsubsection{Analog-to-Digital Converters}
+The successive approximation register (SAR) ADC samples the voltage differential supplied by inverting and non-inverting shaper outputs with a 40MHz sampling frequency each BX into a 10-bit digital signal. Due to delay introduced by the preceding circuit the ADC might start converting the analog signal at an unfavorable point in time. To avoid this the ADC has a phase handle that can offset the start of conversion. The phase parameter is tunable in 16 steps of about $1.5ns$. The 16th step corresponds to one full BX (delay of 25ns). Desired is that the ADC starts the conversion at the maximum of the input signal. The phase parameter is a global setting. The procedure that detects the ideal phase parameter is called \textit{sampling scan}. In figure \ref{fig:sampScan} a phase offset of one would start the conversion at the best timing.
+\begin{figure}[htp]
+		\makebox[\textwidth][c]{\includegraphics[width=17cm]{sampling_scan.png}}
+		\caption{ADC count as a function of Phase parameter for two halves}
+		\label{fig:sampScan}
+\end{figure}
+
+After the optimal phase is set the ADC's response to input singals can be characterized. By increasing the injected charge a linear increase in ADC counts is expected that saturates at some point. This test is referred to as \textit{injection scan} (figure \ref{fig:inj1}). The slope of the injection scan and the location of the saturation point is desired to be similar between channels and chips. A nonoptimal shaper reference voltage leads to earlier ADC saturation as can be seen in figure \ref{fig:inj}b or no ADC response at all. This is one of the main results from the first testing session of single chips and led to the investigation of dynamic range with respect to the $Inv_{vref}$ and $Noinv_{vref}$ parameters.
+
+\begin{figure}[htp]
+	\centering
+		\subfloat[][Optimal shaper settings]{\includegraphics[height=6cm]{injection_scan1.png} \label{fig:inj1}}
+		\subfloat[][Nonoptimal shaper settings]{\includegraphics[height=6cm]{injection_scan2.png} \label{fig:inj2}}
+		\caption{Injection scans for two halves of a chip} \label{fig:inj}
+\end{figure}
+
+\subsubsection{Discriminators}
+The Time-Over-Threshold (TOT) and Time-Of-Arrival (TOA) discriminators (comparators) each trigger a Time-To-Digital converter (TDC) when the input voltage exceeds a set reference voltage. The TDC used for TOA measurements is activated at the rising edge of the discriminator output to capture the time the signal arrives, while the TDC for TOT measurement triggers on rising and falling edges of the discriminator output to capture the time the comparator was activated, e.g. the time spent over the reference voltage threshold. The TOT measurement is meant to allow for measurements of large charges that exceed the dynamic range of the ADC. Therefore, a reference voltage about the amount of charge it takes to saturate the ADC is ideal. For the TOA comparator a reference voltage as low as possible is ideal to record the smallest amount of input charge without being too low to be triggered by noise (up to about 10 ADC counts). For that reason the chip designers included global and local DACs on the reference voltage of the discriminators.\\
+\\
+Since it is desired that the chips' TOA and TOT measurements are uniform for identical input signals the bahavior of the discriminators must be characterized. This is done in two ways. Firstly, by varying the global thresholds $TOT_{vref}$ and $TOA_{vref}$ at a set injected charge and recording the threshold for 50\% efficiency (e.g. 50 of 100 events activated the TDC), incrementing the amount of charge and repeating the procedure. This is referred to as \textit{global TOT/TOA threshold scan}. When plotting the global thresholds at 50\% efficiency as a function of the amount of injected charge a linear relation is expected. Secondly, the local pedestals are determined in a similar manner to section \ref{sec:ped} after which a trimming can be applied to mitigate inter-channel dispersion. The first testing session of single chips showed inconclusive results of TOA and TOT measurements. At the time of writing the discriminators and their contribution to noise are under investigation.
+
+\subsection{Conclusion}
+In summary 240 single chips and 48 Hexaboards (42 low density and 6 high density) have been tested in four testing campaigns. At the time of writing the testing data is analyzed and compared across chips and platforms which will yield a list of rejection criteria and tolerances. Besides the produced raw data needed for characterization online analysis at the time of testing opened new areas of investigation, e.g.  optimization of global shaper parameters, interference caused by discriminator and TDC activity and noise studies on Hexaboards and modules. Each measurement campaign helped to improve software and firmware - one example for this is the optimization of the configuration software discussed in section \ref{sec:sw}. Finally, a recent effort towards usability led to developments of a server-side web application and a client-side graphical user interface program as interfaces to the developed programs, which the author is involved in.
+
+
+\end{document}

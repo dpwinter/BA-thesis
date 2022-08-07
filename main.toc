@@ -1,0 +1,47 @@
+\babel@toc {english}{}
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\contentsline {section}{\numberline {2}Particle physics at CERN}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Standard Model}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Large Hadron Collider}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Compact Muon Solenoid Experiment}{5}{subsection.2.3}%
+\contentsline {section}{\numberline {3}High Granularity Calorimeter}{10}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Calorimetry}{11}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Silicon Sensor}{15}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Readout Chip}{17}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Trigger Primitive Generator}{19}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Readout Chip Characterization}{22}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Process variation}{22}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Strategy}{23}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}Hardware}{23}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}Software}{24}{subsubsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.3}Tests and results}{27}{subsection.4.3}%
+\contentsline {subsubsection}{\numberline {4.3.1}Power consumption}{27}{subsubsection.4.3.1}%
+\contentsline {subsubsection}{\numberline {4.3.2}Probe points}{28}{subsubsection.4.3.2}%
+\contentsline {subsubsection}{\numberline {4.3.3}Pedestals}{29}{subsubsection.4.3.3}%
+\contentsline {subsubsection}{\numberline {4.3.4}Shapers}{32}{subsubsection.4.3.4}%
+\contentsline {subsubsection}{\numberline {4.3.5}Analog-to-Digital Converters}{33}{subsubsection.4.3.5}%
+\contentsline {subsubsection}{\numberline {4.3.6}Discriminators}{33}{subsubsection.4.3.6}%
+\contentsline {subsection}{\numberline {4.4}Conclusion}{36}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Convolutional Autoencoder Trigger Concept}{37}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Neural network}{37}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}Autoencoder}{39}{subsubsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.2}Convolutional Neural Network}{40}{subsubsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.3}MNIST dataset}{41}{subsubsection.5.1.3}%
+\contentsline {subsection}{\numberline {5.2}Concept studies}{43}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Elementary encoder unit}{45}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}Split encoding}{51}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.3}Invariance in $\bm {\phi }$}{51}{subsubsection.5.2.3}%
+\contentsline {subsubsection}{\numberline {5.2.4}Partial encoding}{55}{subsubsection.5.2.4}%
+\contentsline {subsubsection}{\numberline {5.2.5}Trigger primitive information}{56}{subsubsection.5.2.5}%
+\contentsline {subsubsection}{\numberline {5.2.6}Information bottleneck}{63}{subsubsection.5.2.6}%
+\contentsline {subsection}{\numberline {5.3}Discussion}{65}{subsection.5.3}%
+\contentsline {section}{\numberline {6}Summary \& Outlook}{68}{section.6}%
+\contentsline {section}{Appendices}{69}{section*.65}%
+\setcounter {tocdepth}{0}
+\contentsline {section}{\numberline {A}Gradient Descent and Backpropagation}{69}{appendix.1.A}%
+\contentsline {section}{\numberline {B}Principal Component Analysis}{71}{appendix.1.B}%
+\contentsline {section}{\numberline {C}Neural network model architectures}{72}{appendix.1.C}%
+\contentsline {section}{\numberline {D}Neural network training progression}{75}{appendix.1.D}%
+\contentsline {section}{\numberline {E}16-Split weight distributions}{76}{appendix.1.E}%
+\setcounter {tocdepth}{1}
+\contentsline {section}{References}{77}{section*.78}%

@@ -1,0 +1,108 @@
+\relax 
+\@nameuse{bbl@beforestart}
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand{\transparent@use}[1]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{si_rep,sipm_rep}
+\citation{acm}
+\citation{pd}
+\providecommand \oddpage@label [2]{}
+\babel@aux{english}{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Readout Chip Characterization}{1}{section.1}\protected@file@percent }
+\newlabel{chp:char}{{1}{1}{Readout Chip Characterization}{section.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Process variation}{1}{subsection.1.1}\protected@file@percent }
+\newlabel{sec:proc_var}{{1.1}{1}{Process variation}{subsection.1.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Analog front-end of HGCROC\relax }}{1}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:analogFE}{{1}{1}{Analog front-end of HGCROC\relax }{figure.caption.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Strategy}{2}{subsection.1.2}\protected@file@percent }
+\newlabel{sec:strategy}{{1.2}{2}{Strategy}{subsection.1.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.1}Hardware}{2}{subsubsection.1.2.1}\protected@file@percent }
+\newlabel{sec:hw}{{1.2.1}{2}{Hardware}{subsubsection.1.2.1}{}}
+\newlabel{fig:rocchar}{{2a}{2}{Subfigure 2a}{subfigure.2.1}{}}
+\newlabel{sub@fig:rocchar}{{(a)}{a}{Subfigure 2a\relax }{subfigure.2.1}{}}
+\newlabel{fig:trophy}{{2b}{2}{Subfigure 2b}{subfigure.2.2}{}}
+\newlabel{sub@fig:trophy}{{(b)}{b}{Subfigure 2b\relax }{subfigure.2.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Test boards attached to hexacontroller.\relax }}{2}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:hw}{{2}{2}{Test boards attached to hexacontroller.\relax }{figure.caption.2}{}}
+\citation{i2c}
+\citation{axi}
+\citation{tdr_roc}
+\citation{tdr_roc}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.2}Software}{3}{subsubsection.1.2.2}\protected@file@percent }
+\newlabel{sec:sw}{{1.2.2}{3}{Software}{subsubsection.1.2.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Software architecture of test systems. The client computer (left) sends configuration files to the hexacontorller server (right), which configures the ROCs and sends the data back to the client which stores it for later analysis.\relax }}{3}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:sw}{{3}{3}{Software architecture of test systems. The client computer (left) sends configuration files to the hexacontorller server (right), which configures the ROCs and sends the data back to the client which stores it for later analysis.\relax }{figure.caption.3}{}}
+\citation{zmq}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Table of I$^2$C registers and their function \cite  {tdr_roc}.\relax }}{4}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:i2c_reg}{{4}{4}{Table of I$^2$C registers and their function \cite {tdr_roc}.\relax }{figure.caption.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Amount of bus read/write operations for different configuration files. The init.yaml file contains the initial configuration of the ROCs, while all other yaml-files are used to configure the ROC for certain tests. Because these files are executed with each run, a full test requires configuring the ROC with the almost identical configuration file several times in a row. The amount of successive configurations for testing puposes is indicated in paranthesis behind each configuration file.\relax }}{5}{table.caption.5}\protected@file@percent }
+\newlabel{tab:bus}{{1}{5}{Amount of bus read/write operations for different configuration files. The init.yaml file contains the initial configuration of the ROCs, while all other yaml-files are used to configure the ROC for certain tests. Because these files are executed with each run, a full test requires configuring the ROC with the almost identical configuration file several times in a row. The amount of successive configurations for testing puposes is indicated in paranthesis behind each configuration file.\relax }{table.caption.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Write cache saves state and avoids redundant writes. It is written to or querried via an address--value pair. The address consists of a tuple (R0,R1) and the value is a byte to be written to the specified ROC register.\relax }}{6}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:write_cache}{{5}{6}{Write cache saves state and avoids redundant writes. It is written to or querried via an address--value pair. The address consists of a tuple (R0,R1) and the value is a byte to be written to the specified ROC register.\relax }{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Tests and results}{6}{subsection.1.3}\protected@file@percent }
+\newlabel{sec:tests}{{1.3}{6}{Tests and results}{subsection.1.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.1}Power consumption}{6}{subsubsection.1.3.1}\protected@file@percent }
+\citation{ina250}
+\citation{schematic:trophy}
+\citation{al}
+\citation{al}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.2}Probe points}{7}{subsubsection.1.3.2}\protected@file@percent }
+\citation{al}
+\citation{al}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces ProbeDC measurements for one half across chips \cite  {al}.\relax }}{8}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:probeDC}{{6}{8}{ProbeDC measurements for one half across chips \cite {al}.\relax }{figure.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces HGCROC calibration circuit. Figure is a zoomed excerpt of Fig.~\ref  {fig:analogFE}.\relax }}{8}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:calibCirc}{{7}{8}{HGCROC calibration circuit. Figure is a zoomed excerpt of Fig.~\ref {fig:analogFE}.\relax }{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.3}Pedestals}{8}{subsubsection.1.3.3}\protected@file@percent }
+\newlabel{sec:ped}{{1.3.3}{8}{Pedestals}{subsubsection.1.3.3}{}}
+\citation{tdr_roc}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Voltage at $CTEST$ as function of $CalDAC$ value \cite  {al}.\relax }}{9}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:intCtest}{{8}{9}{Voltage at $CTEST$ as function of $CalDAC$ value \cite {al}.\relax }{figure.caption.9}{}}
+\newlabel{fig:pedRun1}{{9a}{10}{Subfigure 9a}{subfigure.9.1}{}}
+\newlabel{sub@fig:pedRun1}{{(a)}{a}{Subfigure 9a\relax }{subfigure.9.1}{}}
+\newlabel{fig:pedRun2}{{9b}{10}{Subfigure 9b}{subfigure.9.2}{}}
+\newlabel{sub@fig:pedRun2}{{(b)}{b}{Subfigure 9b\relax }{subfigure.9.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Measurement of baseline pedestals.\relax }}{10}{figure.caption.10}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces a}}{10}{subfigure.9.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces b}}{10}{subfigure.9.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces ADC counts as a function of $Inv_{vref,trim}$.\relax }}{11}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:pedScan}{{10}{11}{ADC counts as a function of $Inv_{vref,trim}$.\relax }{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.4}Shapers}{11}{subsubsection.1.3.4}\protected@file@percent }
+\newlabel{sec:shaper}{{1.3.4}{11}{Shapers}{subsubsection.1.3.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.5}Analog-to-Digital Converters}{12}{subsubsection.1.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.6}Discriminators}{12}{subsubsection.1.3.6}\protected@file@percent }
+\newlabel{fig:vref2d}{{11a}{13}{Subfigure 11a}{subfigure.11.1}{}}
+\newlabel{sub@fig:vref2d}{{(a)}{a}{Subfigure 11a\relax }{subfigure.11.1}{}}
+\newlabel{fig:sat2d}{{11b}{13}{Subfigure 11b}{subfigure.11.2}{}}
+\newlabel{sub@fig:sat2d}{{(b)}{b}{Subfigure 11b\relax }{subfigure.11.2}{}}
+\newlabel{fig:dyn_range2d}{{11c}{13}{Subfigure 11c}{subfigure.11.3}{}}
+\newlabel{sub@fig:dyn_range2d}{{(c)}{c}{Subfigure 11c\relax }{subfigure.11.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces ADC counts as function of the global shaper parameters.\relax }}{13}{figure.caption.12}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces a}}{13}{subfigure.11.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces b}}{13}{subfigure.11.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces c}}{13}{subfigure.11.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces ADC count as a function of Phase parameter for two halves\relax }}{14}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:sampScan}{{12}{14}{ADC count as a function of Phase parameter for two halves\relax }{figure.caption.13}{}}
+\newlabel{fig:inj2}{{13a}{14}{Subfigure 13a}{subfigure.13.1}{}}
+\newlabel{sub@fig:inj2}{{(a)}{a}{Subfigure 13a\relax }{subfigure.13.1}{}}
+\newlabel{fig:inj1}{{13b}{14}{Subfigure 13b}{subfigure.13.2}{}}
+\newlabel{sub@fig:inj1}{{(b)}{b}{Subfigure 13b\relax }{subfigure.13.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Injection scans for two halves of a chip. The blue curve corresponds to the first half, orange to the second.\relax }}{14}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:inj}{{13}{14}{Injection scans for two halves of a chip. The blue curve corresponds to the first half, orange to the second.\relax }{figure.caption.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4}Conclusion}{15}{subsection.1.4}\protected@file@percent }

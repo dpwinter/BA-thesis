@@ -1,0 +1,7 @@
+\setcounter {tocdepth}{0}
+\contentsline {section}{\numberline {1}Gradient Descent and Backpropagation}{7}%
+\contentsline {section}{\numberline {2}Principle Component Analysis}{9}%
+\contentsline {section}{\numberline {3}Neural network model architectures}{10}%
+\contentsline {section}{\numberline {4}Neural network training progression}{10}%
+\contentsline {section}{\numberline {5}16-Split weight distributions}{10}%
+\setcounter {tocdepth}{1}

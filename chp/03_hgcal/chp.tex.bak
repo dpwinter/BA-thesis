@@ -1,0 +1,184 @@
+\documentclass[../../main.tex]{subfiles}
+
+\graphicspath{
+	{"./img/03_hgcal/"}      % for main
+	{"../../img/03_hgcal/"} % for subfile
+}
+
+\begin{document}
+
+\section{High Granularity Calorimeter}
+% Since most of the high energetic collision products will hit the forward direction the endcaps are perticularly affected.\\
+The increase in instantaneous peak luminosity due to the High Luminosity Upgrade imposes two major challenges on the calorimeter systems. \cite{db_hgcal} %Pile-up and irradiation damage. \cite{db_hgcal}
+\begin{enumerate}
+	\item The increased amount of hard proton-proton collisions at the interaction point generate more shower inducing particles and thereby more showers inside the calorimeter which leads to a higher detector occupancy, also referred to as \textit{pile-up}. Larger pile-up makes it harder to distinguish between showers in order to identify its inducing particles. In the high luminosity environment an amount of $\sim130$ pile-up events per bunch crossing is expected which is a more than 3-fold increase to the prospective value in Run 3. \cite{hgcal} In figure \ref{fig:pile} the effect of pile-up (PU) on the energy resolution for the particular example of $H\rightarrow\gamma\gamma$ can be seen. The energy resolution $\sigma_{eff}(E)/E$ deteriorates (increases) especially in the forward region ($\eta > 1.5$) with the amount of pile-up and integrated luminosity. Energy resolution is the quantity that describes how effectively showers in the detector can be distinguished.
+\item Due to larger amounts of proton-proton collisions the irradiation level increases which causes severe damage to sensitive detector components. The PbWO$_4$ crystals of the ECAL endcap for example will not be able to cope with the expected fluence of $\sim\num{e16}$ \SI{1}{MeV} neutron-equivalents, which exceeds their design values by over one order of magnitude. \cite{zhang,anfreville,pileup} The radiation damage to the crystals causes less yield in scintillation light, as seen in figure \ref{fig:sn} that ultimately leads to poorer signal quality, i.e. a lower signal-to-noise ratio. It can also be seen that the effects of irradiation damage are particularly concerning in the forward region of $\eta > 1.5$.
+\end{enumerate}
+\begin{figure}[htp]
+	\centering
+	\subfloat[][]{\includegraphics[height=7cm]{ecal_energy.png}\label{fig:pile}}
+	\hspace{5mm}
+	\subfloat[][]{\includegraphics[trim=0 15 0 0, clip, height=6.9cm]{SN_curve.png}\label{fig:sn}}
+	\caption{(a) Energy resolution $\sigma_{eff}(E)/E$ for photons from Higgs boson decay for different integrated luminosities and pileup as a function of pseudorapidity $\eta$. (b) Expectation of relative light output S/S$_0$ of ECAL crystals for electron showers of \SI{50}{GeV} as function of pseudorapidity $\eta$ for various aging conditions with S$_0$ being the light response of undamaged crystals. In 2016 (Run 2) the integrated luminosity amounted to \SI{190}{fb^{-1}} whereas in the 2027/28 (High Luminosity) an amount of \SIrange{3000}{4000}{fb^{-1}} is expected. Figures taken from Ref. \cite{phase2}}
+\end{figure}
+These two reasons motivated the redesign of the CMS endcap calorimeter systems which are currently under development. The endcaps will tackle the challenges of pile-up and irradiation damage by using a highly granular detector geometry and radiation-hard silicon sensors. Due to the high granularity being the prominent feature of the devices the endcap calorimeters are referred to as High Granularity Calorimeters (HGCAL).\\
+\\
+HGCAL is designed as a sampling calorimeter, consisting of 50 layers of active material interspersed with absorber material. Each endcap is devided into two sections \`a 28 layers in the electromagnetic section (CE-E) and 22 layers in the preceding hadronic section (CE-H). In CE-E copper, copper-tungstate and lead is used as absorber and silicon as active material while CE-H uses steel as absorber material, and silicon sensors plus scintillator tiles as active material for high and low radiation regions, respectively, which can be seen in figure \ref{fig:hgcal_prof}.\\
+\\
+The active layers are composed by a total amount of \SI{30000} (\SI{28056} silicon and \SI{3744} SiPM) hexagonally-shaped 8-inch sensors which are attached to printed circuit boards (PCBs) that together mount about \SI{100000} (\SI{95826} silicon and \SI{4320} scintillator) readout chips (ROCs). Each ROC is connected to a maximum\footnote{In practice some channels are not connected to sensor cells.} of 72 sensor cell. \cite{si_rep, sipm_rep} In total there are \SI{\sim6} million silicon readout channels for both endcaps. The high granularity becomes apparent by comparing this amout to the combined \SI{\sim70000} readout channels of the barrel hadronic and electromagnetic calorimeters of CMS. \cite{calo_rev} One endcap weights \SI{\sim230}{t} with a conic shape of \SI{\sim2}{m} in length and \SI{\sim2.3}{m} radius at its larger end. Each calorimeter covers about $1.5<\eta<3$ of incident particles.\\
+\\
+HGCAL is commonly referred to as 5-D calorimeter because it enables the measurement of energy, time and position due to the integration of three defining technologies.
+\begin{itemize}
+	\item Large dynamic energy range by ADC and time-over-threshold (TOT) method
+	\item Precise time of arrival measurements with timing resolution of \SI{\sim25}{ps}
+	\item Accurate tracking of shower developments due to high granularity
+\end{itemize}
+
+\begin{figure}[htp]
+	\centering
+	\subfloat[][]{\includegraphics[trim=0 170 0 0, clip, height=8cm]{hgcal3.png}\label{fig:hgcal_prof}}
+	\hspace{1cm}
+	\subfloat[][]{\scalebox{-1}[1]{\includegraphics[trim=0 0 400 0, clip, height=8cm]{hgcal1.jpg}\label{fig:hgcal_real}}}
+	\caption{(a) Schematic cross section of an endcap. Image taken from Ref. \cite{pp}, cropped and flipped. (b) Calorimeter endcap inside CMS detector. Image taken from Ref. \cite{cms_endcap}}
+\end{figure}
+
+\subsection{Calorimetry}
+Calorimetry is a detection principle in particle physics used for event selection (triggering), precision measurement of fourmomenta and energy flow reconstruction in events. \cite{wigmans08} Calorimeter data contributes to the data analysis mainly by identification of incident particles (mostly electrons, positrons, photons and muons) and by measuring the energy these particles release when interacting with matter.\\
+\\
+While the incident particles are usually at energies in the GeV range the performance of a calorimeter is determined by processes happening at the MeV, keV and sometimes also eV level. A particle traversing a calorimeter induces a shower of secondary particles with decreasing energies which eventually can be measured. Showers initiated by hadrons\footnote{Such as protons and pions.} are more complex and distincly different from ones initiated by electrons or photons. \cite{wigmans08} Since the focus of this thesis is solely on electromagnetic showers, these will be discussed in more detail.\\
+\\
+Electromagnetic showers develop due to a few well understood processes.
+\begin{itemize}
+	\item Electrons and positrons lose energy by ionization at low energies and by bremsstrahlung at high energies. If the energy is at a critical point $\epsilon_{crit}$ both of these processes play an equally important role. Since bremsstrahlung transforms one particle into two ($e^{\pm}\rightarrow e^{\pm}\gamma$) while ionization involves merely an energy transfer of one particle to another the critical energy marks a turning point in shower development, namely the point at which shower growth is at its maximum followed by shower decay. The critical energy is roughly inversely proportional to the calorimeter material used for particle absorption,
+		\begin{equation}\label{eq:e_crit}
+			\epsilon_{crit} = \frac{610MeV}{Z+1.24},
+		\end{equation}
+		with Z, the atomic number of the absorber material. The fractional energy loss of both these processes in the high-Z material lead can be seen in figure \ref{fig:pdg_e}.
+	\item Photons interact through the photoelectric effect at low energies, pair production at high energies and via Compton scattering in between. As for electrons and positrons, only pair production contributes to the shower growth by turning one particle into two ($\gamma\rightarrow e^+e^-$). In figure \ref{fig:pdg_g} the cross sections of these processes can be seen as a function of the respective photon energy in the high-Z material lead. Figure \ref{fig:g_e_dom} shows the likelihood of these processes as a function of the atomic number Z. In low-Z materials Compton scattering is by far the most dominant process in a large energy spectrum. As an example for the energy- and material-dependence of the processes' cross sections the one for photoelectric effect $\sigma_{p.e.}$ scales by $\sim Z^5E^{-3}$, thereby is highly material-dependent. Furthermore, the angular distribution of e$^+$e$^-$ pairs is highly directional while photo- and Compton-electrons scatter isotropically. Therefore, electromagnetic showers begin concisely at high energies while widening as the shower particles energies are decreasing. \cite{wigmans08}
+\end{itemize}
+\begin{figure}[htp]
+	\centering
+	\subfloat[][]{\includegraphics[height=6.1cm]{e_processes.png}\label{fig:pdg_e}}
+	\subfloat[][]{\includegraphics[height=6.5cm]{gamma_processes.png}\label{fig:pdg_g}}
+	\caption{(a) Fractional energy loss in lead by electrons and positrons as function of energy. (b) Cross sections in lead by photons as function of energy. The shown processes are cross sections for pair production in electron field ($\kappa_e$), pair production in nuclear field ($\kappa_{nuc}$), photoelectric effect ($\sigma_{p.e.}$), Rayleigh scattering ($\sigma_{Rayleigh}$), and photo-nuclear absorption ($\sigma_{g.d.r}$). Figures taken from Ref. \cite{pdg}.} \label{fig:pdg}
+\end{figure}
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=8cm]{g_energy_domains.png}
+				\caption{Photon energy domains in which photoelectric effect, Compton scattering and pair production most likely occur as function of the atomic number Z. Image taken from Ref. \cite{wigmans08}}
+				\label{fig:g_e_dom}
+			\end{center}
+\end{figure}
+Showers start developing in the absorber material for incident particles in the GeV range and higher. The longitudinal shower development can be characterized by the radiation length $X_0$ which is defined as the depth of material an electron (or positron) has to penetrate in order to lose $\sim63\%$ (1-$\frac{1}{e}$) of its energy:
+\begin{equation}
+	X_0 = 716.4 g cm^{-2} \frac{A}{Z(Z+1)ln(\frac{287}{\sqrt{Z}})}.
+\end{equation}
+The mean free path of a photon before it interacts can be expressed in terms of the radiation length as $\lambda_0 = \frac{9}{7}X_0$.\\
+\\
+Due to the particle multiplication process the average shower energy can be expressed in a decay law of the shower-inducing particle's original energy $E_0$ and the current penetration depth $x$, as
+\begin{equation}
+	\langle E(x)\rangle = E_0e^{-x/X_0}.
+	\label{eq:E}
+\end{equation}
+By setting the boundary condition E($t_{max}$)=$\epsilon_{crit}$ the shower maximum $t_{max}$ can be found by
+\begin{equation}
+	t_{max} \approx ln\bigg(\frac{E_0}{\epsilon_{crit}}\bigg)+t_0,
+\end{equation}
+with $t_0$ being a correction factor\footnote{$t_0$ is -0.5 for electrons and +0.5 for photons as shower-inducing particle. \cite{calo03}} and $t_{max}$ defined in radiation lengths $X_0$. It becomes apparent that the shower maximum only grows logarithmically with the incident particle's energy. For this reason electromagnetic calorimeters can cover a large range of energies while being constructed rather compact in size.\\
+\\
+Besides longitudinal development the transverse extent is characterized by two processes:
+\begin{itemize}
+	\item Electrons and positrons diverge from the shower axis via multiple scattering with the atoms in the absorber material.
+	\item Photons, electrons and positrons diverge via the isotropic processes of Compton scattering and photoelectric effect.
+\end{itemize}
+While the first effects dominate for early shower stages the second ones dominate after the shower maximum is reached. The empirical quantity describing the transverse extent is the Moli\`ere radius $R_M$, defined as a cylinder around the shower axis containing 90\% of the shower's energy.
+\begin{equation}
+	R_M \approx 21 MeV \frac{X_0}{\epsilon_{crit}(MeV)}.
+\end{equation}
+Both $R_M$ and $X_0$ are defined for the energy regime $>1GeV$. \cite{calo03} It is noteworthy that $R_M$ and $X_0$ are just macroscopic approximations and should not be taken at face value. As an example for lead 40\% of the shower energy is deposited by particles below $1 MeV$ while the critical energy of lead is at $\sim7 MeV$ \cite{wigmans08}, thus a large fraction of shower energy is not included in the macroscopic description.\\
+\\
+The definition of X$_0$ must be considered fundamentally different for photons and electrons. This is due to the fact that showers initiated by these particles develop quite differently. In figure \ref{fig:g_e_dist} the distribution of deposited energy fraction in the first 5 radiation lengths of a 10 GeV electron and photon showering in lead can be seen. Electrons start interacting immediately in the first few milimeters while photons may or may not interact in the same depth of material. Also electrons deposit on average a larger amount of energy (21.0\%) with a lower spread ($\pm6.4\%$) than photons (14.8\%) with a larger spread ($\pm 8.6\%$).
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=8cm]{g_e_distrib_proc.png}
+				\caption{Distribution of energy fraction deposited in first 5 $X_0$ by 10 GeV electrons and photons showering in lead. Image taken from Ref. \cite{wigmans08}}
+				\label{fig:g_e_dist}
+			\end{center}
+\end{figure}
+\\
+In comparison to electromagnetic showers hadronic showers are more complex because they contain electromagnetic and hadronic components. The majority ($\sim90\%$) of particles inducing an electromagnetic shower component are due to $\pi^0$s decaying into two photons, which in turn are subject to pair production. The hadronic shower component on the other hand is caused by nuclear reactions where neutrons and protons are released from the atomic nuclei of the absorber material's atoms when hit by hadrons. The nuclear binding energy which has to be overcome for nuclear reactions to occur will be lost in this interaction and cannot be measured anymore. This energy is referred to as invisible energy and makes it in general harder to infer incident energies of hadronic showers. \cite{wigmans08}\\
+\\
+Calorimeters can be constructed either as homogeneous calorimeter or sampling calorimeters. Homogeneous calorimeters are build from a single material that causes the generation of secondary particles (absorber material) and produces the measurable signal (active material). An example for a homogeneous calorimeter is the current CMS ECAL which uses PbSO$_4$ scintillators as homogeneous material. Sampling calorimeters on the other hand use alternating layers of absorber and active material, such that they only measure a sample of the generated secondary particle population. The current CMS HCAL and the HGCAL are examples for sampling calorimeters.
+% These remarks should underline the importance of the shower shape (transversal and longitudinal extension) for electromagnetic showers\footnote{In larger extension (even more so) also for hadronic showers.} as this becomes important in subsequent chapters.
+
+\subsection{Silicon Sensors}
+The active materials of HGCAL are silicon sensors and scintillator tiles.\footnote{In this thesis only silicon sensors are discussed.} The silicon sensors, seen in figure \ref{fig:sens}, are produces from 8-inch silicon wafers and cut into hexagonal shape in order to reduce waste and ensure modularity. The bulk of the material is doped with opposite charge to the smaller implants on the surface of the material, such that PN-junctions are formed. The sensors are produced in two variants, one with a higher cell count of 444 cells (high density) and one with a lower cell count of 198 cells (low density). While the high density sensors are only used for large $\eta$-regions, close to the beam pipe, most of HGCAL\footnote{Electromagnetic and hadronic sections.} is comprised of low density sensors.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=8cm]{sensor.png}
+				\caption{8" low density HGCAL silicon sensor}
+				\label{fig:sens}
+			\end{center}
+\end{figure}
+\\
+The sensors are planned to operate in reverse bias with a voltage of \SI{\sim300}{V} which fully depletes the silicon over its thickness. The two characteristic properties of a sensor are the leakage current as function of voltage and the capacitance while fully depleted. While the capacitance shows inhomogeneties in the in sensor thickness, cell size and doping, the leakage current is sensitive to ambient temperature, light, and variations in doping. The amount of leakage current at a given voltage is an important characteristic of a sensor, as it is the main source of electrical noise during operation with large bias voltage. Typical results can be seen in figure \ref{fig:sens_plots}.\\
+\begin{figure}[htp]
+	\centering
+	\subfloat[][]{\includegraphics[height=6.5cm]{c_v.png}\label{fig:cv}}
+	% \hspace{1mm}
+	\subfloat[][]{\includegraphics[height=6.5cm]{i_v.png}\label{fig:iv}}
+	\caption{(a) Capacitance at 400V for LD 6" prototype sensor. (b) Single cell leakage current at 1000V for LD 6" prototype sensor. Figures taken from Ref. \cite{sensor}} \label{fig:sens_plots}
+\end{figure}
+\\
+When secondary shower electrons and positrons traverse the sensor thickness they are fully absorbed, creating electron-hole pairs of \SI{3.6}{eV} each in the sensor material due to ionization. Shower photons rarely interact with the silicon due to the high Z-dependence ($\sim Z^5$) of the cross-section for photoelectric effect $\sigma_{p.e.}$\footnote{Photons more likely interact with the absorber material by the photoelectric effect, creating photoelectrons in the process.}. However, the photons transfer energy via Compton scattering with the conduction electrons. The strong electric field induced by the applied bias voltage electrons and holes are quickly collected and conveyed to the readout chip. When no electron is traversing the sensor there is still a small leakage current present, which is the product of spontaneous electron-hole productions due to excitation through ambient temperature and low energetic photons\footnote{Visible light has a large cross section for photoelectric interaction}. A low leakage current is desired since it has a significant impact on the signal-over-noise ratio of the measurement.\\
+\\
+Sensors include three types of cells that are used for different purposes. While the regular readout cells make up the vast majority, there are only 6 calibration cells and 12 common-mode cells for low density sensors, and 12 and 24 for high density, respectively.\\ Calibration cells are smaller in size such that they have lower capacitance and are sensitive to smaller charges than the regular cells. The purpose of these cells is to enable a recalibration of the sensor on minimum ionizing particles (MIP) which regular cells are not able to distinguish from noise after some time of operation due to irradiation damage.\\
+Common-mode cells are used to register ambient electric background noise which is later subtracted from the measurements in order to account for effects of irradiation damage and to improve the signal-to-noise ratio. The sensors are mounted on hexagonal carrier boards (hexaboards) which mount several readout chips that are connected to the sensor cells over via bonds.
+
+\subsection{Readout Chip}
+The readout chip (ROC) of HGCAL (HGCROC) is responsible for energy and timing measurement of secondary shower particles ionizing and exciting the sensor material. One HGCROC can connect to sensor cells via 72 channels that each have their individual on-chip amplification and measurement circuitry. By design the chip is separated in two identical halves that equally divide the number of channels. In order to readout all 198 (444) sensor cells of low density (high density) sensors 3 (6) ROCs need to be mounted on a hexaboard and connected to the cells\footnote{For high density hexaboards some cells are not connected to any channel.}.
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=5cm]{roc1.jpeg}
+		\caption{The HGCROC at scale}
+		\label{fig:roc}
+	\end{center}
+\end{figure}
+\\
+The HGCROC provides energy and timing measurements via three mechanisms.
+\begin{enumerate}
+	\item Smaller energies are measured directly via a 10-bit analog-to-digital converter (ADC) after amplification and shaping. 
+	\item Larger energies are measured indirectly via a 12-bit time-to-digital converter (TDC) by using the time-over-threshold (TOT) technique. This technique utilizes a discriminator comparing the input signal to a constant reference voltage while controlling an adjustable current source to feed back a linearly decreased signal scaled by the input. Thereby, the TDC measurement is started once the input signal exceeds the reference voltage and stopped when the input charge is reduced to a value below this threshold. The measured time interval is, due to the linearity of signal degradation itself linearly proportional to the input signal. Ideally, the time-over-threshold measurement is initiated once the ADC is unable to measure a given input signal, e.g. once the signal exceeds the ADC's dynamic range.
+	\item A shower particle's time of arrival (TOA) is also measured via a 12-bit TDC using a discriminator. However, since only a timestamp is required the TDC measurement is triggered merely once the input signal exceeds the discriminator's reference voltage. This voltage is set to a relatively low threshold in order to record inputs of all energies. Yet, it should not be too low to avoid a faulty TDC activation by electronic noise (usually up to $\sim10$ ADC counts).
+\end{enumerate}
+The input signal from the silicon sensors comes from the amout of charge collected, usually in the order of $\sim$fC. This charge is converted to a voltage by the preamplifier and further redirected to the three above mentioned detection devices. The energy (fully) deposited by a shower particle in the active sensor material is linearly proportional to the amount of charge it creates.
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=9.5cm]{roc2.png}
+		\caption{Schematic architecture of HGCROCv2. Figure taken from \cite{tdr_roc}}
+		\label{fig:roc_schema}
+	\end{center}
+\end{figure}
+\\
+The chip can be read out and configured via two separate communication ports called fast commands (for data acquisition) and slow controls (for chip configuration). Besides the raw sensor data, the HGCROC also provides trigger data, a coarser and more compressed version of the sensor data that is used by the HGCAL trigger primitive generator. For this purpose the measurement of four (optionally nine) neighboring sensor cells is summed to build a trigger cell. The data from a trigger cell is converted into the 7-bit fixed point data format 4E3M (4 exponent 3 mantissa) which can be read out together with the raw data for every bunch crossing. Only after the CMS trigger system decides to keep a bunch crossing the full ADC, TOT and TOA data is moved to permanent storage. For this purpose, the full data is temporarily buffered until the trigger decision is made.\\
+
+\subsection{Trigger Primitive Generator}
+The trigger primitive generator (TPG) is part of the CMS Level-1 Trigger (L1T) system seen in figure \ref{fig:trg} as \textit{HGCAL} of the calorimeter triggers. Purpose of the TPG is to produce coarse-grained three-dimensional energy clusters, referred to as \textit{trigger primitives} for the global calorimeter trigger and the correlator trigger. Inside the correlator trigger the trigger primitives of TPGs from all subdetectors of CMS are combined and analyzed in order to generate a trigger decision, e.g. to decide if a bunch crossing contained "interesting"\footnote{Interesting with respect to the objectives of the CMS physics program.} events. If the L1T decides to keep a bunch crossing the high level trigger (HLT) is notified in order to examine the accepted bunch crossing more carefully by using the full resolution data and previously omitted tracker information with more sophisticated algorithms. Only after the HLT decides to keep the data is it written to long-term memory. Purpose of the trigger system is to drastically reduce the bandwidth of data storage.\\
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=10cm]{trig.png}
+		\caption{The CMS Phase-2 Level-1 Trigger system. Figure taken from \cite{tdr_hgcal}}
+		\label{fig:trg}
+	\end{center}
+\end{figure}
+\\
+The trigger primitive generator has to achieve a data reduction of the high grained calorimeter data by a factor of 400. The TPG accomplishes this by means processing the calorimeter in three successive stages: The trigger concentrator chip (ECON-T), the Stage-1 and the Stage-2 trigger processors. The latter two are implemented on FPGAs in a close-by computing cavern, while the ECON-T resides on the detector implementing four algorithms for compressing the sensor data:
+\begin{itemize}
+	\item \textbf{Threshold} excludes sensor data below a certain threshold
+	\item \textbf{Best Choice} includes only N cells with highest value
+	\item \textbf{Super Trigger Cell} sums neighboring trigger cells (reduce granularity)
+	\item \textbf{Generic encoder} is an ASIC that allows implementing a neural net
+\end{itemize}
+Studies have shown \cite{trig_algos} that none of the first three algorithms performs well on all types of event data. The generic encoder block has recently been added to explore the application of machine-learning techniques in order to get stable trigger performance on all types of physics objects. Besides the ECON-T the Stage-1 and Stage-2 processors are reducing the data bandwidth by clustering into 2-dimensional and 3-dimensional clusters, respectively. The three compression stages of the HGCAL TPG will be subject of chapter \ref{sec:nn}.\\
+
+\end{document}

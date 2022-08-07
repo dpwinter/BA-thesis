@@ -1,0 +1,517 @@
+\documentclass[../../main.tex]{subfiles}
+
+\graphicspath{
+	{"./img/05_nn/"}      % for main
+	{"../../img/05_nn/"} % for subfile
+}
+
+\begin{document}
+
+\section{Neural network based trigger primitive generator}\label{sec:nn}
+In the second part of this thesis a concept of trigger primitive generation for the HGCAL detector is presented. The concept is based on the theory of neural networks, a subdomain of artificial intelligence, exploring mathematical structures losely inspired by animal brains. The first section of this chapter introduces the general concept and working principles of neural networks, followed by the presentation of two specific types of NNs, autoencoders and convolutional networks, together with the popular MNIST dataset. These three ingredients are of central importance to the concept developed in the subsequent part. Finally, the experimental part of this chapter presents studies of crucial conceptual aspects with respect to the HGCAL environment. This chapter is completed with a discussion in which all results are reviewed in view of their application to the concept.
+
+\subsection{Neural networks}\label{sec:nn}
+A neural network is a mathematical structure embedding a functional form. In a process called neural network training certain network parameters, i.e. coefficients of the functional form, are gradually adjusted such that the network function approximates a desired function, which is usually unknown. In principle, any function can be fitted arbitrarily close \cite{nielsen15} depending on the network capacity (amount of parameters), its architecture, the training time and amount of available (and relevant) data. Thus, the goal of training is to find a function underlying a problem such that the network is able to predict the correct solution for new data that belongs to the same problem domain, i.e. the network is able to generalize beyond the training data.\\
+\\
+Neural networks are composed of neurons (nodes) and weights (edges) that are arranged in consecutive layers (see Fig.~\ref{fig:schema_nn}) such that each layer's neurons receive their inputs from the previous layer's neurons and send their outputs to the successive layer's neurons. Data is fed to the network via the first (input) layer, undergoes transformations in the intermediate (hidden) layers until it arrives at the final (output) layer that can be read out and interpreted. The amount of hidden layers separates shallow neural networks from deep networks. Deep networks can easily span tens or hundreds \cite{fcholet17} of hidden layers.\\
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=5cm]{nn.png}
+		\caption{Simple neural network architecture. Figure taken from Ref. \cite{jahr15}.}
+		\label{fig:schema_nn}
+	\end{center}
+\end{figure}
+\\
+Data propagating through a neural network is successively transformed by the neurons of each layer. Each neuron transforms its inputs into a single output value, called \textit{activation}. In a fully connected neural network architecture (Fig.~\ref{fig:schema_nn}) the activation of a single neuron is defined by
+\begin{equation}
+	a(\vec{x}) = \sigma\bigg(\sum{w_{ih}x_i}+b\bigg),
+	\label{eq:single_activation}
+\end{equation}
+where $\vec{x}$ represents the inputs (e.g. previous layer's outputs), $w_{ih}$ the connecting weight and $b$ the bias term. The weights and biases represent the free parameters of the network, which are usually initialized to random values before adjustment due to network training. $\sigma$ is a non-linear function (tanh, sigmoid, ReLU, softmax, etc.) that allows the model to capture non-linear relationships in the input data. Geometrically, a neuron activation transforms the input in three ways:
+\begin{enumerate}
+	\item Transform linearly (rotate/scale) the input by $\textbf{W}\vec{x}$.
+	\item Translate to a different position by $b$.
+	\item Warp by $\sigma$. This effectively maps the input into a non-linear manifold.
+\end{enumerate}
+Successive non-linear layers allow complex transformations. \cite{colah_nn} These networks are referred to as deep neural networks (DNNs). Non-linearity is a decisive criterion for depth since a stack of linear hidden layers, on the other hand, can be collapsed to a single layer containing linear combinations of the former. Thereby, DNNs are much more powerful than shallow (linear) nets.\\
+\\
+Since successive hidden layers obtain their inputs from previous layers, $\vec{x}$ can be replaced by $\vec{a}^{l-1}$, where the subscript $l$ refers to the depth index of a layer. Ordering neurons in layers further allows to elevate Eq. \ref{eq:single_activation} to vector-matrix operations:
+\begin{equation}
+	\vec{a}^l(\vec{a}^{l-1}) = \sigma\big({\textbf{W}^l\cdot \vec{a}^{l-1}+\vec{b}^l}\big),
+	\label{eq:vec_activation}
+\end{equation}
+with the weight matrix $\textbf{W}^l$ between two consecutive layers and $b^l$ a layer's biases. In this form the (forward) propagation of data through the network can be computed rather easily by basic linear algebra subprograms that are highly optimized for matrix multiplications. A graphical processing unit (GPU) can further accelerate the computation by introducing many computational cores that allow for massive parallelization.\\
+\\
+As network training is a curve fitting process involving many free network parameters, care must be taken not to overfit (or underfit) the model on the training data. Overfitting happens when the parameters are tuned too much, the desired function is for example linear while the network learned a quadratic fit due to random fluctuations in the training data. Underfitting is the reverse process of a linear fit to a desired quadratic function resulting from too few network parameters or insufficient training time. To prevent overfitting and underfitting the training process can be monitored and halted at the right time.\\
+\\
+As mentioned before, since the desired function is usually unknown the training process is guided by a so called loss (or objective) function $\mathscr{L}$. Since networks can be trained for different purposes (classification, regression, reconstruction, data generation, etc.) a multitude of loss functions can be found in the literature. For a given input, the loss function takes the activations of the network's output layer and a corresponding desired output (ground truth) as input and generates a single real number as error measurement. For reconstruction, for example, the mean-squred error function
+\begin{equation}
+	\mathscr{L}_{MSE}(\vec{x}, \vec{y}) = \sum_n{(x_i - y_i)^2}
+	\label{eq:mse}
+\end{equation}
+is often used. If the desired output has been generated in advance by experts or external sources one speaks of supervised learning. One of many variants of supervised learning is self-supervised learning in which the input data and the ground truth are identical. This training method will be used in Sec. \ref{sec:ae} of this thesis.\\
+\\
+Calculating the gradient of the error with respect to each network parameter shows the impact that changing the parameters has on the loss. Thus, the training process is the optimization problem of minimizing the loss by varying the network parameters and the most effective way to do so is to change a parameter $p$ in the opposite direction of the loss's gradient with respect to $p$, i.e. in the direction of steepest (gradient) descent.
+\begin{equation}
+	p' = p - \eta \nabla_p\mathscr{L},
+\end{equation}
+with the small step size $\eta$, called the learning rate. According to this update rule the network is guaranteed to find a (local) minimum of the loss function. The process is illustrated in Fig.~\ref{fig:grad_desc}.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=8cm]{gradient_descent.png} 
+				\caption{Visualization of the gradient descent algorithm. Figure taken from Ref. \cite{vlad20}.}
+				\label{fig:grad_desc}
+			\end{center}
+\end{figure}
+\\
+As neural networks are desired to generalize on a population of data describing a problem the learning process needs to take a sufficiently large (representative) subset of the population into account. In order to learn generalization the gradient descent algorithm is performed on the averaged gradient of the losses for all samples of the training set before updating the parameters (via small step $\eta$) and since this would require a lot of calculation and memory usage, a variant called \textit{stochastic} gradient descent (SGD) is commonly used. SGD considers small randomly selected subsets of the training data (usually 32 or 64 samples per subset), called mini-batches to calculate the gradients and update the parameters. Thereby, the network is able to learn faster, but also less precise when converging towards the minimum.\\
+\\
+The gradients of the loss function are calculated by tracking the data transformations of the forward pass and subsequently calculating partial derivatives $\delta\mathscr{L}/\delta b$ and $\delta\mathscr{L}/\delta w$ at each node, starting from the output layer by exploiting the chain rule of multi-variate calculus. This procedure, referred to as backwards propagation is illustrated in Fig.~\ref{fig:bp}, in which the loss is labeled $E$, the activation $y_i$ and weights denoted as $\delta E/\delta w$, while biases are ignored.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=8cm]{backprop.png}
+				\caption{Illustration of forward and backward pass and the components of the computational tree used during neural network training process. Figure taken from Ref. \cite{baydin18}.}
+				\label{fig:bp}
+			\end{center}
+\end{figure}
+\\
+The backpropagation algorithm can be developed by starting from the loss function $\mathscr{L}$ and successively applying the chain rule. At the beginning an error term of the neuron in the output layer $L$ is defined
+\begin{equation}
+	\delta_i^L = \frac{\partial\mathscr{L}}{\partial z_i^L} = \frac{\partial\mathscr{L}}{\partial a_i^L}\frac{\partial a_i^L}{\partial z_i^L},
+	\label{eq:del}
+\end{equation}
+for the non-linear activation $a_{i}^{l} = \sigma(z_{i}^{l})$ with $z_{i}^{l}=\bm{W}^l\vec{a}^{l-1}+b_i$. Thus, the rule for computing the previous layer's error can be found:
+\begin{equation}
+	\delta_i^{L-1}=\frac{\partial\mathscr{L}}{\partial z_i^{L-1}}=\underbrace{\frac{\partial\mathscr{L}}{\partial a_i^L}\frac{\partial a_i^L}{\partial z_i^L}}_{\delta_i^L}\frac{\partial z_i^L}{\partial \vec{a}^{L-1}}\frac{\partial \vec{a}^{L-1}}{\partial \vec{z}^{L-1}}=\delta_i^L\bm{W}^{L}\sigma^\prime(\vec{z}^{L-1}),
+\end{equation}
+thus for any layer $l$ one obtains:
+\begin{equation}
+	\delta_i^l = (\bm{W}^{l+1})^T\vec{\delta}^{l+1}\sigma^\prime(z^l).
+	\label{eq:del2}
+\end{equation}
+The partial derivatives of the loss with respect to the biases and weights of any layer can be found in a similar manner:
+\begin{equation}
+	\frac{\partial\mathscr{L}}{\partial w^l_{ij}} = \underbrace{\frac{\partial \mathscr{L}}{\partial a^l}\frac{\partial a^l}{\partial z^l}}_{\delta_i^l}\frac{\partial z^l}{\partial w^l_{ij}}=\delta_i^la_j^{l-1}
+\end{equation}
+for the weights and 
+\begin{equation}
+	\frac{\partial \mathscr{L}}{\partial b^l_i} = \underbrace{\frac{\partial \mathscr{L}}{\partial a_i^l}\frac{\partial a_i^l}{\partial z_i^l}}_{\delta_i^l}\underbrace{\frac{\partial z_i^l}{\partial b_i^l}}_{1} = \delta^l_j
+\end{equation}
+for the biases. Eq. \ref{eq:del} and Eq. \ref{eq:del2} can be written in vector form using the Hadamard product $\odot$ (element-wise multiplication) and the gradient of the loss with respect to an activation $\nabla_{a^L}\mathscr{L}$:
+\begin{equation}
+	\vec{\delta}^L= \nabla_{a^L} \mathscr{L}\odot \sigma'(\vec{z^{L}})
+\end{equation}
+\begin{equation}
+	\vec{\delta}^l = ((\textbf{W}^{l+1})^{T}\vec{\delta}^{l+1})\odot\sigma'(\vec{z}^l).
+\end{equation}
+\\
+While this chapter gave a brief introduction to neural networks in general, the following sections special network architectures are discussed, that aide in the subsequent presentation of a neural network based trigger primitive generator for the HGCAL detector.
+
+\subsubsection{Autoencoders}\label{sec:ae}
+An autoencoder is a type of neural network which is often used for dimensionality reduction. By introducing a bottleneck in the architecture of the network a lower dimensional representation (encoding) of input data is produced, which is subsequently transformed into the original input space (decoding). The decoded reconstruction of the input is compared to the original input via a reconstruction error, often the mean squared error $MSE=\frac{1}{n}\sum_n{(x_i-\hat x_i)^2}$, for $n$ features $x_i$ of a data point and its corresponding reconstruction $\hat x_i$. By minimizing the reconstruction error the network seeks for the best possible representation of the input in its bottleneck, also called latent space.\\
+\\
+The simplest type of autoencoder is the \textit{undercomplete} autoencoder, depicted in Fig.~\ref{fig:autoenc}. The term undercomplete refers to the latent space, which is smaller in dimensions than the input space. Other types of autoencoders, on the other hand, are \textit{over}complete. They initially contain a latent space larger than the input space that is subsequently reduced by training under regularization constraints which panalize activation of latent neurons and thus creating the bottleneck. These types include the sparse, contractive, and denoising autoencoders. The variational autoencoders, on the other hand, is a network architecture for data generatiion. All of these can be further complemeted with a deep stack and/or convolutional layers giving rise to two further categories of deep and convolutional autoencoders. Deep undercomplete convolutional autoencoders are considered in this thesis.\\
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=8cm]{autoencoder.png}
+		\caption{Schematic of a five-hidden-layer deep undercomplete autoencoder network. Figure taken from Ref. \cite{menshawy18}.}
+		\label{fig:autoenc}
+	\end{center}
+\end{figure}
+\\
+While Fig.~\ref{fig:autoenc} schematically shows a deep undercomplete autoencoder, there exist an even simpler type with a single hidden layer. By considering linear neuron activation $\vec{a}(\vec{x})=\textbf{W}\vec{x}+\vec{b}$, it turns out that this simple network learns an encoding function similiar to a dimensionality reduction technique called principle component analysis (PCA). In PCA the original feature axes of a dataset are swapped with new ones (as linear combinations of the originals) that are aligned with the directions of greatest variance in the data. \cite{pca} Mathematically, this is accomplished by eigendecomposition $\textbf{C}=\textbf{P}\bm{\lambda}\textbf{P}^T$ of the unbiased covariance matrix \textbf{C} associated with data points $\vec{x}_i$ contained in the dataset \textbf{X}. \textbf{C} is defined as
+\begin{equation}
+	\textbf{C}= \frac{1}{m-1}\textbf{X}\textbf{X}^T.
+\end{equation}
+The eigenvectors $\vec{v}_i$ corresponding to the largest eigenvalues $\lambda_i$ resemble the $n$ principle components, where $m$ is the number of input/output dimensions and $n\leq m$. The eigenvectors and eigenvalues can be found according by
+\begin{equation}
+	\textbf{C}\cdot\textbf{P}=\textbf{P}\cdot \bm{\lambda},
+\end{equation}
+with $\textbf{P}$, the matrix containing the eigenvectors $\vec{v}_i$ in its columns and $\bm{\lambda}=\text{diag}(\lambda_i)$:
+\begin{gather}
+	\textbf{P}=
+		\begin{pmatrix} 
+			v_{1,1} & v_{2,1} & \cdots & v_{n,1}\\
+			v_{1,2} & v_{2,2} & \cdots & v_{n,2}\\
+			\vdots  & \vdots  & \ddots & \vdots \\
+			v_{1,m} & v_{2,m} & \cdots & v_{n,m}
+		\end{pmatrix} \text{ and }
+	\bm{\lambda}=
+		\begin{pmatrix} 
+			\lambda_{1} & 0 & \cdots & 0\\
+			0 & \lambda_{2} & \cdots & 0\\
+			\vdots  & \vdots  & \ddots & \vdots\\
+			0 & 0 & \cdots & \lambda_{n}
+		\end{pmatrix}.
+\end{gather}
+Thus, the transformation from $m$ input to $n$ latent features is accomplished by the transformation $e(\vec{x})=\textbf{P}^T\vec{x}$, and the reverse transformation into input space via $d(e(\vec{x}))=\textbf{P}\textbf{P}^T\vec{x}$. When $n\textless m$, than $\textbf{C}\neq \textbf{P}\bm{\lambda}\textbf{P}^T$ and $d(e(\vec{x}))$ cannot perserve all information anymore, $d(e(x))\neq x$. It is noteworthy to mention that for PCA to succeed principle features must exists in the data to begin with, i.e. correlation in the features of the input data is presumed.\\
+\\
+Both PCA and the linear undercomplete autoencoder are looking for the same linear subspace. The only difference is that the basis vectors of autoencoders must not necessarily be orthogonal and identical, while the eigenvectors of the (symmetric) covariance matrix for PCA are by principle always orthogonal. \cite{Goodfellow16} Furthermore, PCA requires the eigenvectors to be normalized, thus yielding a unique solution while for autoencoder training there exists no such precondition.\\
+\\
+When using deep autoencoders with nonlinear activation functions the network is able to learn a more powerful generalization of PCA, since nonlinearities allow for warping as discussed in Sec. \ref{sec:nn}, which account for complex relationships in the input data by allowing transformations to more complex manifolds. Furthermore, depth can exponentially reduce computational cost and the amount of training data needed to learn certain functions. \cite{Goodfellow16} In order to achieve generalization in deep autoencoders overfitting must be prevented. Too much capacity (layer depth and width) could lead to learning an identity function by mapping each sample of the training dataset to an index in latent space (a single hidden neuron would be sufficient) from which the input is perfectly reconstruct -- a reconstruction error of zero. In this case, the network would extremely overfit on the training data and yield no useful generalization. \cite{jordan_ae} Therefore, a common practice for training deep autoencoders is greedy pretraining, in which the layers of the encoder and decoder parts are trained successively in isolation on each others latent represenations before combining them to the deep model.
+
+\subsubsection{Convolutional Neural Networks}
+Convolutional neural networks (CNNs) are neural networks containing (a stack of) convolutional layers, which are particularly well-suited when processing image-like data. Real-world images often exhibit an inherent bias -- a spatial relationship between the features in a scene. A digit, for example, can be interpreted as a composition of simple features: straight lines, round edges and circles arranged in a certain way. CNNs use (small) filters to learn these features looking at partial areas of the input data at a time. By sliding the filter (also called kernel) across an image features can be learned, and later (at inference time) detected, equally well in all of its parts. This technique make CNNs invariant to the position at which a feature appears in the image.\\
+\\
+Figure \ref{fig:conv} shows the working principle of the convolutional layer. The pixel values of an image patch are weighted by a filter and afterwards added together to form the output activation of a resulting image (called feature map). Subsequently, the window onto the input image is advanced and another weighted sum is calculated to built the second activation of the feature map. This process is repeated until all patches of the image have a corresponding activation on the feature map. The process of sweeping a kernel $K$ along an image $I$ is closely related to the convolution operation $K*I$. Though, $K$ is not flipped before sweeping thus the operation is, more precisly, the cross-correlation operation.\\
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=3.5cm]{conv.png}
+		\caption{Working principle of convolutional layers. One pixel value of the resulting feature map is a weighted sum of an image patch with the kernel values. Figure taken from Ref. \cite{convBlock}.}
+		\label{fig:conv}
+	\end{center}
+\end{figure}
+\\
+The size of the feature map is determined by three parameters: The filter size, the step size (stride) and the amount of additional padding. In some cases where it is desired to keep the original input image dimensions also in the resulting feature map a stride size of one in x- and one in y-direction can be chosen, while zero padding the image according to the kernel size, which is referred to as \textit{same} padding. \textit{Valid} padding on the other hand does not pad the image and also only allows windows that are fully inside the input image. The output (feature map) dimensions $n_{out}$ of a convolutional layer can thus be calculated from the input dimensions $n_{in}$, the amount of padding to one side $P$, the step size (strides) $S$ and the kernel size $K$ as
+\begin{equation} \label{eq:conv}
+	n_{out} = \bigg\lfloor\frac{n_{in}+2P-K}{S}\bigg\rfloor + 1,
+\end{equation}
+\\
+In CNNs several convolutional layers are used in succession, thus subsequent feature maps take preceding maps as inputs to look for locally constrained features. To illustrate the effect, consider a dataset of handwritten digits. While the first convolutional layer learns (low-level) features like edges and shapes, showing their presence as high activations in the corresponding feature map, the second convoutional layer has the ability to combine the presence of these features to find more general (higher-level) features, i.e. to combine for example the activations of a straight line and a circle in distinct parts of the input image to match activations corresponding to the digit \textit{9}. Usually, several filters are learned for one convolutional layer.\\
+\\
+The trainable parameters of convolutional layers are the weights of the kernel together with a bias. Since kernels are usually small and only the weights of the kernel are learned the number of network parameters is much smaller compared to fully connected networks, which makes CNNs both fast and memory efficient.\\
+\\
+In the last decade CNNs have been extensively researched, so that they are became a defacto standard when dealing with image-like data in neural networks. 
+
+\subsubsection{MNIST dataset}
+The MNIST dataset is a collection of \SI{70000}{} scanned images of handwritten digits, together with their correct classifications. The name of the dataset comes from the fact that it is composed of a \textbf{m}odified subset\footnote{Size-normalized and centered in a fixed-size image\cite{lecun_mnist}.} of two datasets collected by the United States' \textbf{N}ational \textbf{I}nstitute of \textbf{S}tandards and \textbf{T}echnology. Some of the images contained in the dataset can be seen in Fig.~\ref{fig:mnist}. The \SI{70000}{} images are split in two parts of \SI{60000}{} for training and \SI{10000}{} for testing. Training and test set are composed of writing samples from two different groups of people in order to allow testing the network independently sampled data not used during training \cite{nielsen15}.\\
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=7cm]{mnist.png}
+		\caption{Subset of the MNIST handwritten digit dataset. Figure taken from Ref. \cite{wiki_mnist}.}
+		\label{fig:mnist}
+	\end{center}
+\end{figure}
+\\
+The data points of the MNIST dataset are 28$\times$28 greyscale images, in which each pixel has an integer intensity between 0 (black) and 255 (white). The correct classifications of training and test data comes in two companion datasets, which are composed of numbers between zero and nine that represent the digit shown on the images. In this thesis, the MNIST dataset was used as a surrogate for calorimetric shower data because of the following reasons:
+\begin{itemize}
+	\item Calorimeter data is in principle image-like, since shower shapes exhibit spatial information.
+	\item Like handwritten digits shower shapes have semantic meaning, i.e. their energy content, type of shower-originating particle and its incident location. 
+	\item The sensor cell readings is, like greyscale images, single-channel data.
+	\item MNIST is a complete and well-studied dataset that can be used directly, whereas a shower dataset has to be collected from simulation together with its corresponding ground truth first.
+	\item Interpretations of classification and reconstruction of handwritten digits is closer to the domain of human experience than doing the same on shower data. Thereby, experimentation results can be generated faster and with more clarity.
+\end{itemize}
+
+\subsection{Concept studies}
+While the previous sections introduced the basics of neural networks and some of their applications the following paragraphs are discussing how these techniques can be used inside HGCAL's trigger primitive genererator that was introduced in Section \ref{subsec:tpg}. In particular, it will be illustrated how neural networks can be exploited for the purpose of compressing data and extracting relevant information in order to supply the Level-1 trigger system with the necessary information to make a trigger decision.\\
+\\
+When bunches of particles cross at the intersection point of the CMS experiment a subset of these particles are subject to hard collisions, producing a range of other particles in the process, of which a few are incident to the endcap calorimeters. The incident particles produce electromagnetic or hadronic showers, described in Section \ref{sec:calo}, which traverse the detector. The shapes of these showers often differ for different types of incident particles and energies. In order to generate a trigger decision, i.e. to determine if a bunch crossing contained collisions that are relevant for physics processes the CMS physics program is looking for, the trigger system must distill three types of information from the sensor data for each shower that has been recorded:
+\begin{enumerate}
+	\item Type of incident particle that induced a shower, e.g. $\gamma$, e$^\pm$, $\pi$, $\tau$, etc.
+	\item Energy of the incident particle (inferred from shower energy)
+	\item Hit position and direction of incident particle
+\end{enumerate}
+Since the Level-1 trigger decision must be generated in a short amount of time (in one BX) the data rate the L1T algorithms can process is limited. Therefore, sensor data is compressed before processing, with the goal to conserve as much information as possible. Current implementations of compression algorithms in the first of three stages of compression in the HGCAL TPG, the \textbf{e}lectronic \textbf{con}centrator chip for \textbf{t}rigger data (ECON-T), show varying performance depending on the type and energy of incident particles. This situation is summarized in Fig.~\ref{fig:trig_algo}, which shows the triggger rate as a function of the offline threshold\footnote{The offline threshold in by definition the threshold of 95\% trigger efficiency} for different incident particles. A low trigger rate corresponds to better classification accuracy on the given data. An increase in rate means an algorithm needs more data in order to reach the same classification accuracy. Thus, there is no single algorithm which performs well in all cases. Furthermore, the large amount of expected pile-up in the high luminosity environment of Run 4 worsens the situation significantly due to overlapping showers and an increase in ambiguities in shower data.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=6cm]{rate.png}
+				\caption{Increase of trigger rate rate as a function of offline threshold for the three different compression algorithms of the ECON-T chip: Threshold, Super Trigger Cell, BestChoice. Two further variants Coarse BestChoice applies first sorting and then selectecs N largest values, BC+STC uses BestChoice in the ECAL and Super Trigger Cells in the HCAL, based on the observation that BestChoice works best for EM showers (small objects) and STC best for jets (larger objects). Image taken from Ref. \cite{trig_algos}}
+				\label{fig:trig_algo}
+			\end{center}
+\end{figure}
+\\
+These facts lead to the question if there exist a better algorithm which combines the advantages of the above algorithms yielding good classification performance on all types of incident particles. As discussed in Section \ref{sec:ae} autoencoders are a higher level generalization of conventional compression algorithms that allow more powerful representations by finding more complex relationships in the input data. The idea, introduced in this chapter is to develop a neural network based system spanning the three levels of compression (ECON-T, Stage 1, Stage 2) of the HGCAL TPG to mitigate the problem of particle type dependent trigger rates. In this thesis, several neural network models have been developed in order to investigate the impact of architectural boundary condition imposed by the HGCAL TPG to support the development of a proof of concept. These boundary conditions are:
+\begin{itemize}
+	\item \textbf {Elementary encoder unit}: The recently integrated generic encoder ASIC in the ECON-T allows an implementation of a concise neural network. As discussed in the previous sections, autoencoders are particularly well suited for finding meaningful encodings that are a generalization of other encoding techniques.
+	\item \textbf{Split encoding}: Shower data is distributed amongst several ROCs -- one ROC only sees an excerpt of the information it is meant to preserve. Thus, the question arises how effectively can encoders compress parts of an object in question such that the desired information can be recovered by combining partial encodings. In other words, how much differs a global encoding from the combination of local encodings.
+	\item \textbf{Invariance in }$\bm{\phi}$: The physical processes inside the detector are identical for same $\eta$, in concentric rings around the beam axis. Thus, showers induced by same particles with same energies are expected to follow the same statistics. By this virtue, encoding units in these common areas can be expected to behave very similar.
+	\item \textbf{Partial encoding}: Shower inducing particles can hit the detector at virtually any location. Thus, the occupancy of sensors can look vastly different from the viewpoint of the encoder units. In order to account for this, the units must be trained on images that exhibit this randomness in location.
+	\item \textbf{Trigger primitive information}: As discussed in Sec. \ref{sec:calo} the longitudinal and lateral extent as well as the internal structure of a shower contains information about the three relevant types of information: energy, particle type and incident position. The 1:1 reconstruction of showers is not the desired task of the TPG.
+	\item \textbf{Information bottleneck}: Because of the timing constraint for L1T decisions the sensor data needs to be reduced by a factor of $5\times 30\times 8=1200$ in the three\footnote{There are two more compression stages in the summing of sensor data to trigger cells and in the change of datatype from 10 to \SI{7}{bit}. However, these stages cannot be altered and are therefore not further considered in this discussion.} compression stages of the HGCAL trigger primitive generator (cf. Section \ref{subsec:tpg}). Thus, to make a tradeoff decisions a relationship between compression ratio and information capacity would be useful.
+\end{itemize}
+% \begin{figure}[htp]
+% 			\begin{center}
+% 				\includegraphics[height=4cm]{l1_compression_stages.pdf}
+% 				\caption{The compression stages of the HGCAL trigger primitive generator. Sensor data is captured by sensor cells, summed with their neighboring cells to trigger cells. Each trigger cell is compressed from \SI{10}{bit} to \SI{7}{bit} into a different data format. The ECON-T compresses data via one of three trigger algorithms, while Stage 1 and Stage 2 are further reducing data size via two- and three-dimensional clustering, respectively.}
+% 				\label{fig:compression_stages}
+% 			\end{center}
+% \end{figure}
+Based on these constraints a neural network architecture was developed, schematically depicted in Fig.~\ref{fig:conc_arch}.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=11.0cm]{concept_arch.jpeg}
+				\caption{Illustration of a neural network based HGCAL trigger primitive generator. Trigger cell data from three ROCs is send to one ECON-T, where the data is concatenated and encoded to the latent represenation of a module. This latent space is sent together with 20 other ECON-T encodings to the Stage-1 encoder, which, again, concatenates its inputs and encodes it. Encodings of Stage-1 are sent together with 29 other Stage-1 encodings to Stage-2, which concatenates its inputs and encodes it. The latent spaces of Stage-2 are combined to build the trigger primitive. ROC and ECON-T compression is implemented in hardware, while Stage-1 and Stage-2 is implemented in firmware. Corresponding decoders are implemented in software in order train the network and monitor the outputs of each stage during inference.}
+				\label{fig:conc_arch}
+			\end{center}
+\end{figure}
+\\
+The main idea is to use feed-forward encoder networks along the three compression stages of the HGCAL trigger, generating latent spaces which are subsequently combined and fed as input to the next stage. The corresponding decoders will be implemented in software only for training and monitoring, thereby allowing for sparser hardware implementations of just the encoder part. The network as a whole is trained such that relevant information is maximally preserved. In this thesis the key conceptual ideas are explored by using a smaller scale architecture on the toy problem of recognizing handwritten digits from the MNIST dataset. In the following the results of these studies will be presented.
+
+\subsubsection{Elementary encoder units}\label{sec:generic_enc}
+As shown in Fig.~\ref{fig:conc_arch}, the idea of the concept is build on multiple elementary encoder units propagating successively encoded latent representations through a cascade of encoding stages, starting from calorimetric (trigger cell) data and ending with trigger primitives. The following studies focus on the behavior of encoders in a single stage (ECON-T) by considering all of the before mentioned boundary conditions. The cascading behavior of multiple consecutive stages is subject of future studies. Subject of this section is the basic building block of the concept, the elementary encoding unit, and its reconstruction performance under ideal conditions.\\
+\\
+Calorimetric data is inherently image-like -- sensor cell readings can be interpreted as pixels (of energy intensity) forming an image of a shower. As discussed in Sec. \ref{sec:calo}, the length, width and overall shape of showers carry macroscopic information that allows to infer information about its inducing particle. Thus, the encoder unit should be capable of extracting structural information from the shower image. Sec.~\ref{sec:conv} showed that convolutional neural networks are the ideal choice when it comes to such data due to their ability to extract a hirarchy of features by correlating features in a layer with themselves (inductive bias).\\
+\\
+Additionally, each encoding stage has the task to compress the calorimetric data by a certain ratio without losing too much information. As discussed in Sec.~\ref{sec:autoenc}, the goal of PCA is to preserve dimensions (features) in the data that show the most variance, thus carry the most information and that autoencoders are a more powerful generalization of PCA. Thus, an autoencoder architecture is the prefered choice for the encoder networks. Furthermore, the fixed amount of incomming and outgoing data links of the compression stages necessitates the implementation of an undercomplete structure.\\
+\\
+Deep convolutional layers and an undercomplete autoencoder architecture can be combined to a deep convolutional and undercomplete autoencoder, which will be the model under investigation in this section. With hindsight to the real application in the ECON-T the network depth has been kept at a reasonable size to ensure implementation in limited (hardware) resources. An illustration of the achitecture can be seen in Fig.~\ref{fig:cae1}. In order to compare the performance of neural network architectures after introducing different constraints, the saturated reconstruction (MSE) loss is used as a measure of compression performance and visual fidelity of the reconstructed image.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[trim=280 300 250 570, clip, height=9cm]{1split_model.jpeg}
+				\caption{Illustration of convolutional autoencoder model. The encoder takes a $28\times28$ input image, produces a $4\times4$ latent space from which the decoder tries to reproduce the original image.}
+				\label{fig:cae1}
+			\end{center}
+\end{figure}
+\\
+The basic convolutional autoencoder consists of a stack of convolutional layers, which reduce the input image dimensions with each layer according to Eq. \ref{eq:conv}, until a sufficiently small output feature map is produced. As it is typical for convolutional layers to increase the amount of filters with depth, the resulting feature maps need to be combined at the end of the encoder in order to form the bottleneck. There are two ways to achieve this
+\begin{itemize}
+	\item by using a point-like convolutional layer at the end of the encoder that uses a single filter and thereby collapses all preceding feature maps into a single output map, which can either be used directly as two-dimensional latent space or flattened to one dimension. The resulting encoder structure is fully convolutional. Therefore, this model is referred to as fully convolutional autoencoder (FCAE).
+	\item by using a fully connected (dense) layer at the end of the encoder which connects all pixels from all preceding feature maps to a one-dimensional layer of arbitrary size in order to build the bottleneck. Due to the dense layer this model produces a different latent space and is thus referred to as convolutional autoencoder (CAE).
+\end{itemize}
+After the bottleneck, transposed convolutional layers expand the respresentation back into the original input space in the decoder part of the autoencoder.\\
+\\
+While the FCAE, trained on reconstruction, produces latent representations that resemble pixelized versions of the input images, the latent space of the CAE has a more code-like nature, as seen in Fig.~\ref{fig:CAE_expl}. The reason for the difference in representations can be explained by expressing the dense layer by an equivalent convolutional layer with a kernel size matching the feature map dimensions of the last encoder (convolutional) layer, no strides and an amount of channels (filters) that is equivalent to the amount of units in the dense layer. Per channel a one pixel feature map is produced by using the same filter on all input feature maps, yielding a one-dimensional output in the channel dimension which is equivalent to the output of a dense layer. By this transformation the effect of the dense layer on the latent space can be seen more clearly -- by scanning all feature maps for the same pattern, the dense (or dense-equivalent) layer looks for global features (common to all feature maps) and yields activations based on their combined presence, whereas the point-like convolutional layer combines the presence of all local features (same pixels along the channel axis) into the latent representation.\\
+\begin{figure}[htp]
+	\begin{center}
+		\subfloat[][]{\includegraphics[height=6cm]{1split_FCAE_expl.png}\label{fig:FCAE_expl}}
+		\hspace{4mm}
+		\subfloat[][]{\includegraphics[height=6cm]{1split_expl.png}}
+		\caption{Examples of input images (first row), their latent space representation (middle row) and their reconstruction from latent space (last row) for (a) fully convolutional autoencoder (FCAE) and (b) convolutional autoencoder (CAE).}
+		\label{fig:CAE_expl}
+	\end{center}
+\end{figure}
+\\
+Also, the network capacity of the CAE is larger than the FCAE's, which allows modelling of more complex functions. This is confirmed by observing the reconstruction error, which is twice as much for the FCAE than when using a dense layer in the encoder (and decoder\footnote{The dense layer of the decoder is not necessary to illustrate the working principle here described, however it drastically improves performance due to increased network capacity. Because the decoder in the concept is implemented in software and not subject to any size constraint, it was chosen much larger than the encoder's dense layer.}). Because of the superior performance of the autoencoder including dense layers, this architecture (CAE) was chosen as a baseline for all further studies.\\
+\\
+A further advantage of using a dense layer in the latent space is that its dimensions can be easily changed, whereas the fully convolutional model requires significant changes to the architecture in order to produce a change in dimensions. By varying the latent dimensions while keeping the rest of the architecture unchanged a relationship between reconstruction quality and compression ratios can be established. As reconstruction quality is not defined quantitatively, the saturated reconstruction loss on the validation set  was chosen as a representative measure for information loss due to the bottleneck. An example of the progression of this loss during training for latent dimensions of 16 can be seen in Fig.~\ref{fig:cae16_train}. For all latent dimensions the validation loss converges early on, however to guarantee saturation, the best value after \SI{1000} epochs was selected for comparison.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=7cm]{01_cae16_loss_epoch1000.png}
+				\caption{Progression of the MSE loss on train set (blue) and test/validation set (orange) for CAE with 16 latent dimensions and \SI{1000} training epochs.}
+				\label{fig:cae16_train}
+			\end{center}
+\end{figure}
+\\
+For different bottleneck dimensions, the loss on the validation set saturates at different values. Fig.~\ref{fig:latent_dim} shows saturated validation losses as function of the compression ratio, bottleneck size divided by the $28\times28$ input dimensions of the image. If the loss is near zero, the reconstruction is perfect. The loss seems to approach zero already before a compression ratio of 1 (encoder-decoder identity mapping) is achieved. The reason for this is that the handwritten digits only occupy a small subset of the $28\times28$ input space, thus a representation of only $\sim160$ dimensions (corresponding to a compression ratio of 0.2) is sufficient to represent all information of digits. In other words, the current representation of digits in $28\times28$ images is a rather inefficient way to store the contained information. For compression ratios below 0.2 the network starts to lose information during encoding-decoding. However, with a ratio of only 0.02 (corresponding to 16 latent dimensions) the reconstruction still shows high visual fidelity. This ratio has been consistently used in the following studies to achieve comparability.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=7cm]{summary_MSE_1split.png}
+				\caption{Reconstruction loss after 1000 training epochs as a function of the latent space dimensions. Each data point corresponds to a five-hidden-layer deep undercomplete convolutional autoencoder trained on the MNIST handwritten digit dataset.}
+				\label{fig:latent_dim}
+			\end{center}
+\end{figure}
+\\
+
+\subsubsection{Split encodings}\label{sec:latent_concat}
+Shower data is usually distributed over several sensors in the calorimeter. Therefore, the encoder units only see an excerpt of the shower at a time. So, the global shower information which is desired to be preserved needs to be recovered from multiple encodings of partial information. This study investigates the feasibility and performance of such an encoding scheme. In order to compare visual fidelity with the CAE baseline model, only the structure of the encoder units was altered, while the decoder architecture was kept unchanged. Thereby, any changes in performance can be attributed directly to the alteration of the encoder.\\
+\\
+To achieve a limited field of view the $28\times28$ input images have been split in four $14\times14$ patches (quadrants), which are fed in parallel to four independent encoding units that each compute a latent space. These latent spaces are concatenated and fed to the downstream decoder. An illustration of the architecture, referred to as \textit{4-Split} (4S) can be seen in Fig.~\ref{fig:4split}. The encoders are each composed of the same convolutional layers as the CAE encoder, however the terminating dense layer has only four units, such that the four units together produce a latent space of 16 dimensions, equivalent to the CAE. The dense layer at the end of each encoding unit thereby does not correlate global features of the entire image, but rather correlates features per quadrant. This scheme achieves the previously mentioned encoding of partial information. On the other hand, due to its individual set of network parameters each unit has the capability to learn its own, quadrant-specific filters. The total capacity of the four units together is about 33\% larger than the encoder of the baseline model (cf. Table~\ref{tab:sum}). Thus, the question arises: Is the performance of the 4-Split model better due to a larger overall capacity or worse due to smaller dense layers and per quadrant instead of global correlations?\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[trim=220 380 250 420, clip, height=9cm]{4split_model.jpeg}
+				\caption{Illustration of 4-Split model. Four similar encoding units with individual parameters produce four $2\times2$ latent spaces, which are concatenated and fed to the same decoder architecture from the baseline model described in Sec. \ref{sec:generic_enc}.}
+				\label{fig:4split}
+			\end{center}
+\end{figure}
+\\
+As it turns out the 4-Split architecture (4S) performs slightly worse on the reconstruction task, despite its larger capacity. The loss saturates at a value about 20\% larger than the baseline model. Examples of reconstructions and corresponding latent spaces can be seen in Fig.~\ref{fig:4split_2}. The fully convolutional version of the 4-Split (F4S), on the other hand, performs significantly worse than the fully convolutional model (FCAE).\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=6cm]{4split_freeWeights_expl.png}
+				\caption{Examples of input images (first row), their latent space representation (middle row) and their reconstruction from latent space (last row) for the 4-Split model (4S).}
+				\label{fig:4split_2}
+			\end{center}
+\end{figure}
+\\
+This study showed that it is feasiblei, without much loss in reconstruction performance to encode image patches which contain only partial information of an image, from wich the global information was recovered after decoding their concatenation.
+
+\subsubsection{Invariance in \texorpdfstring{$\bm{\phi}$}{p}}
+Due to the symmetry of the CMS detector, physics processes in areas of concentric rings, of $\theta=[0,2\pi]$, around the beam axis have no preferred direction, i.e. they are invariant in $\phi$. Therefore, encoder units positioned in these regions should be expected to also behave the same. For neural networks that means identical architecture and identical network parameters, which guarantees identical results at inference time. This study explores how identical units can be implemented in practice and how they compare in performance to the 4-Split with individual encoder units and to the baseline model (CAE).\\
+\\
+Identical units can be realized by sharing (tying) the parameters of architecturally identical encoder units. Then, the gradients of all encoder units are averaged and a shared set of parameters is updated during training time. This technique not only requires (in theory) less memory, but also greatly simplifies the training of the 4-Split model (4S). Instead of training four individual units in parallel only one unit is trained sequentially on four different inputs, such that the generated latent spaces are first concatenated and then further directed to the decoder. Fig~\ref{fig:latents4} shows the latent space activations of four encoder units (a) with individual and (b) with shared weights exposed to the same $14\times14$ input images. As one can see the latent spaces of the encoder units in (b) look identical.\\
+\begin{figure}[htp]
+	\centering
+	\subfloat[][]{\includegraphics[height=10cm]{4split_freeWeights_sames.png}\label{fig:latent4free}}
+	\hspace{10mm}
+	\subfloat[][]{\includegraphics[height=10cm]{4split_sharedWeights_sames.png}\label{fig:latent4tied}}
+	\caption{Latent space activation for same patches for 4-split with (a) individual weights (b) shared weights}
+	\label{fig:latents4}
+\end{figure}
+\\
+The reconstruction performance of the 4-Split with shared weights is slightly worse than the model with individual weights. The loss saturates at a value of $\sim8\%$ more, which can be attributed to the much larger capacity of the model with individual parameters and its capability to learn quadrant specific filters, whereas the one with shared weights can only draw from a common set of filters for all quadrants. However, it is surprising that the loss is not much larger, considering that the encoders with shared weights contain about three times less network parameters (cf. Tab.~\ref{tab:sum}) than the ones with individual weights. Fig.~\ref{fig:4s_shared} shows examples of inputs images, their corresponding latent spaces and reconstructions. In comparison to Fig.~\ref{fig:4split_2}, the visual fidelity does not look much worse. Only the reconstruction of the digit $5$ in the last column exhibits a significantly lower level of detail.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=6cm]{4split_sharedWeights_expl.png}
+				\caption{Examples of input images (first row), their latent space representation (middle row) and their reconstruction from latent space (last row) for the 4-Split model with shared weights.}
+				\label{fig:4s_shared}
+			\end{center}
+\end{figure}
+\\
+This study showed how identical encoding units, exposed to parts of an image, can be implemented. These encoding units perform a little bit (8\%) worse than encoding units with individual parameters on the reconstruction task. However, the decrease in performance  is rather insignificant compared to the amount of network parameters necessary for the shared-parameter-model (3 times less).
+
+\subsubsection{Partial encoding}
+In the last two sections the construction of a network architecture was discussed that encodes quadrants of an input image which are subsequently combined in order to recover the information of the full image. However, in the detector shower data is not always distributed in equal parts on neighboring sensors. Instead, there are many possible splittings of shower data between sensors, and therefore many more encodings that need to be considered. Furthermore, since the encoder units share a common set of weights, each unit must know about the encodings for all encoders at the same time. This study focuses on simulating randomness of shower position, including non-occupied sensors to test the performance under conditions that are much more realistic than previously discussed.\\
+\\
+In order to simulate different situations of sensor occupancy the $28\times28$ digit is embedded in a larger $56\times56$ image, filled with zeros, and translated in the x- and y-axes in a range of $0\rightarrow27$, such that the digit can reach all possible positions inside the larger image without moving out of its boundaries, which is illustrated in Fig~\ref{fig:rand_pos}. Thereby, the full information is guaranteed to be inside the input image.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=1.9cm]{16split_random_expl.png}
+				\caption{Example of $28\times28$ digits randomly positioned inside larger $56\times56$ image of zeros. The digit is translated in integer steps in the range $0\rightarrow27$ for x- and y-axes from its origin in the upper left corner.}
+				\label{fig:rand_pos}
+			\end{center}
+\end{figure}
+\\
+By extending the 4-Split architecture with shared weights to include four times more encoder units ($16$ in total) and scaling up the decoder accordingly to produce $56\times56$ reconstructions, each encoder covers $1/16$ of the input image. An illustration of the model architecture, referred to as 16-Split (16S), can be seen in Fig~\ref{fig:16s}.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[trim=220 250 250 280, clip, height=7.9cm]{16split_model.jpeg}
+				\caption{Illustration of the 16-Split model. The 16 encoder units have the same architecture as the 4-Split encoders, generating a four unit latent space from a $14\times14$ input image patch. Thus, the decoder input latent space consists of $64$ ($16\times4$) inputs, from which the original $56\times56$ image is reconstructed. The compression ratio of the 16-Split is the same (0.02) as for the 4-Split (4S) and the baseline (CAE) model.}
+				\label{fig:16s}
+			\end{center}
+\end{figure}
+\\
+If the 16-Split is trained without translating the digit in the larger input image, the model is very similar to the 4-Split. Due to the random positioning of the digits the shared set of parameters need to account for more variation in the input data, i.e. the $14\times14$ input patches exhibit more degrees of freedom in comparison to a splitting by quadrants.\\
+\\
+To compare the 16-Split to the other models, the reconstruction loss must be evaluated only on the part of the output image which contains the $28\times28$ digit. Otherwise, the mean of the squared errors between output pixels and truth would pull the loss down, since most of the activations are zero. Evaluating the 16-Split's reconstruction performance by this means a more than two-fold increase in reconstruction loss with respect to the 4-Split with shared weights and to a $2.7\times$ increase in comparison to the baseline (CAE) model. Examples of reconstructed images and their corresponding latent space representation can be seen in Fig.~\ref{fig:expl_16s}. Since four times more encoder units are used, the latent space is composed of $16\times4$ encoder output latent spaces. It can be seen, that most of the latent space activations are near 0, while only the encoding units that see parts of the digit in their input show an activation.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=9cm]{16split_reco_expl.png}
+				\caption{Examples of input images (first row), their latent space representation (middle row) and their reconstruction from latent space (last row) for the 16-Split model with shared weights.}
+				\label{fig:expl_16s}
+			\end{center}
+\end{figure}
+\\
+This study showed a significant decrease in reconstruction performance when the encoders need to account for different digit positions and thereby a larger variety of input patches containing part of the same global information. This is summarized in Tab.~\ref{tab:sum} which shows the validation losses for all models so far discussed after \SI{10000} epochs of training.\\
+\begin{table}[htp]
+\centering
+	\caption{Training summary for different models, including number of trainable parameters for the entire model (encoder model), the training time per epoch and the saturated reconstruction loss (MSE) on the validation set after \SI{10000} epochs. The corresponding model architectures are shown in Appendix A, their training loss curves in Appendix B.}
+	\begin{tabular}{ l | l | l | l | l}
+		\textbf{Model} & \textbf{Input shape} & \textbf{Parameters} & \textbf{Train time} & \textbf{MSE (sat.)}\\
+		\hline
+		FCAE	& \multirow{2}{*}{$1\times28\times28$} & \SI{38786} (\SI{19393}) & \multirow{2}{*}{7s} & 0.0156\\
+		CAE	&  & \SI{99097} (\SI{69008}) &  & 0.0073\\
+		\hline
+		F4S & \multirow{4}{*}{$4\times14\times14$} & \SI{96965} (\SI{77572}) & \multirow{4}{*}{9-11s} & -\\
+		F4S (shared) &  & \SI{38786} (\SI{19393}) &  & -\\
+		4S &  & \SI{121753} (\SI{91664}) &  & -\\
+		4S (shared) &  & \SI{53005} (\SI{23016}) &  & 0.0092\\
+		\hline
+		16S (shared) & $16\times14\times14$ & \SI{148261} (\SI{23016}) & 24-26s & 0.0226\\
+	\end{tabular}
+	\label{tab:sum}
+\end{table}
+
+\subsubsection{Trigger primitive information}
+Reconstruction quality (visual fidelity), which has been discussed so far, is not the primary information needed for trigger primitives -- class, position, and energy of incident particle on the other hand is. Therefore, this study discusses additions to the 16-Split architecture introduced in the last section which allow to train on other objectives than reconstruction.\\
+\\
+First, in order to classify from the combined latent spaces of the 16 encoder units, a new decoder architecture was created, referred to as classification head (16S-C). The classification head contains four dense layers with 256, 128, 64, and 10 nodes, respectively. The last layer's activations are transformed by a softmax function into a probability distribution. During training this probability distribution is compared to a one-hot vector encoding the true class corresponding to an input image by the categorical crossentropy (CCE) loss function. Thereby, the encoders and classification head are trained to minimize the difference of the last layer's activation to the true label. Fig.~\ref{fig:16s_class} depicts latent spaces and probability distribution outputs corresponding to different input image examples, where the class labels are distributed along the x-axis, together with the true class highlighted in blue. The representations of the encodings show a prominent checkerboard patterns. These patterns are an artifact of the strided convolutions of the encoders, which could be avoided by using a stride of one and max-pooling layers in between. Although this pattern is also visible in Fig.~\ref{fig:expl_16s}, it is noteworthy, that for classification it is much more prominent, which could be an indicatation of a more concise latent space in comparison to the space trained on the reconstruction task. In other words, for the classification task only part of the possible capacity of the latent space is used.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[trim=110 0 0 0, clip, height=13cm]{16split_classif_expl6.png}
+				\caption{Examples of input images (first row), their latent space representation (middle row) and their the predicted classification (red) from latent space compared to the true class (blue) of a digit (last row) for the 16-Split model with shared weights.}
+				\label{fig:16s_class}
+			\end{center}
+\end{figure}
+\\
+Second, for the purpose of regressing the position of the incident particle, given the shower image and the true position another decoder architecture, referred to as regression head (16S-R), was created. The regression head is very similar to the classification head -- it also contains four dense layers of which the first three have the same dimensions as the 16S-C. The fourth dense layer, however, contains only two units with linear activation. Thus, for a given example a correspondig truth, consisting of a one x- and one y-coordinate is compared to the two linear output activations via the mean absolute percentage error (MAPE). For each image the truth was defined to mark the center of a digit. Resulting latent spaces and regression outputs for certain example images can be seen in Fig.~\ref{fig:16reg}. The quantity $\Delta r$ is the euclidean distance $\Delta r= \sqrt{\Delta x^2+\Delta y^2}$ between regression output (red circles) and truth (blue circles). The same checkerboard pattern shows up. It seems that for the regression task even less latent capacity is needed -- beside a larger contrast between the units, even units in the area of encoding seem to be not much used in the codes.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[trim=110 0 0 0, clip, height=13cm]{16split_regr_expl.png}
+				\caption{Examples of input images (first row), their latent space representation (middle row) and their the predicted regression of position (red) from latent space compared to the true position (blue) of the center of a digit (last row) for the 16-Split model with shared weights. Above the prediction the euclidean difference $\Delta r$ between truth and prediction is given.}
+				\label{fig:16reg}
+			\end{center}
+\end{figure}
+\\
+After seeing how classification and regression beside reconstruction can be realized within the same architecture, the next question to ask is: How can one train the encoders in order to produce a latent representation that can be used by all decoder heads to recover different information from the same input image? By observing the latent representations of the classification and regression tasks one could assume that unused latent space capacity is used in order to find such an encoding. Fig.~\ref{fig:16s_class_regr} shows the latent space representation for encoding units trained on classification and regression at once. One can see that the contrast of the checkerboard pattern is more faint and that the latent codes seem to occupy more space than seen in Fig.~\ref{fig:16reg} and Fig.~\ref{fig:16s_class}, which supports the hypothesis that the pattern is related to occupied latent space capacity. Both heads have been trained at the same time with equal impact on the loss, by which the shared parameters are adjusted. As it turns out, training with several objectives always involves a tradeoff, with best possible performance only in case a head is trained in isolation. Tab. \ref{tab:16sum} shows an overview of training reconstruction (MSE), classification (CCE) and regression (MAPE) heads in different order, fixing the encoder weights and training the other remaining heads on the (fixed) encoder. The second best performance can be observed when all heads are trained simultaneously. However, the loss weights, which specify the impact of a certain goal on the total loss, are hyperparameters that need to be fine-tuned in order to maximize the performance.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[trim=130 50 100 20, clip, height=15cm]{16split_classif_regre_expl6.png}
+				\caption{Examples for 16-Split trained on classification and regression at the same time. Examples (first row), latent spaces (second row), classification probability distribution (third row), and regression results (last row).}
+				\label{fig:16s_class_regr}
+			\end{center}
+\end{figure}
+\\
+\begin{table}[htp]
+\centering
+	\caption{Comparison of performance for different ways to train the 16-Split model for three different types of objectives: reconstruction (MSE loss), classification (CCE loss, binary accuracy metric), and regression (MAPE loss). The objectives without brackets in a row have been trained first, after which the encoder parameters were set untrainable and finally the objectives in brackets have been trained on this (fixed) encoder. When more than one objective is trained at the same time, the relative impact on the global loss have to be specified via loss weights. These have been chosen somewhat arbitrarily, and can probably be tuned to get better performance.}
+\begin{tabular}{ c | c | c || c | c | c}
+	\multicolumn{3}{c||}{\textbf{Encoder loss weights}} & \multicolumn{3}{c}{\textbf{Decoder loss performance}}\\
+	\hline
+	\textbf{MSE} & \textbf{CCE} & \textbf{MAPE} & \textbf{MSE} & \textbf{CCE, Acc.} & \textbf{MAPE}\\
+	\hline
+	1 & (1) & (1) & 0.0226 & (0.5811, 83.29\%) & (1.5123) \\
+	(1) & 1 & (0.01) & (0.0494) & 0.3248, 92.66\% & (2.9215) \\
+	(1) & (0.05) & 1 & (0.0352) & (0.8090, 73.13\%) & 1.2721 \\
+	\hline
+	\textbf{(1)} & \textbf{1} & \textbf{1} & \textbf{(0.0302)} & \textbf{0.3935, 87.91\%} & \textbf{1.3226} \\
+	1 & (1) & 0.01 & 0.0269 & (2.3115, 9.4\%) & 1.2870 \\
+	1 & 0.05 & (1) & 0.0249 & 0.4767, 88.59\% & (27.4358) \\
+	\hline
+	\hline
+	1 & 0.05 & 0.1 & 0.0340 & 0.5136, 83.18\% & 1.2143 \\
+\end{tabular}
+\label{tab:16sum}
+\end{table}
+\\
+This study showed the performance on the tasks relevant for trigger primitive generation considering the most significant architectural constraints imposed by the real-world system. Noise (equivalent to pileup) has not been discussed so far, which would be interesting to explore in further studies. The noise-reduction property of autoencoders give hope that noise could be handled efficiently as well.
+
+\subsubsection{Information bottleneck}
+In the last experiment the prediction performance of the three objectives with respect to the size of the latent space was investigated. For this purpose, the dense layer of the 16-Split, that defines the size of encoder and decoder latent spaces, has been varied while the rest of the architecture was kept unchanged. Thereby, the saturated loss values (after x epochs of training) as function of the compression ratio between input and latent dimensions was found, which can be seen in Fig.~\ref{fig:sum16s}.\\
+\\
+It can be seen that the losses on the validation set follow the same falling exponential trend as the CAE (Fig.~\ref{fig:latent_dim}) in the face of variations in bottleneck size. Saturation seems to take place at a relatively early stage (compression ratio of 0.02), suggesting that already small amount latent dimensions satisfy all three objectives reasonably well, and that further increase of size does not increase the performance much.\\
+\\
+Tab.~\ref{tab:16latent} shows the corresponding measurements. Classification accuracy and regression loss seem to saturate very early on, while reconstruction loss is still improving. This supports the hypothesis made in the previous section -- classification and regression tasks need less latent capacity and therefore saturate earlier. The reason why they are stil (slightly) improving can be linked to a larger dense layer per encoder, thus a more informative code per image excerpt to compensate for the random positioning of the input digit.\\
+\begin{figure}[htp]
+	\centering
+	\subfloat[][]{\includegraphics[height=6.5cm]{summary_MSE.png}\label{fig:sumMSE}}
+	\hspace{4mm}
+	\subfloat[][]{\includegraphics[height=6.5cm]{summary_MAPE.png}\label{fig:sumMAPE}}
+	\hspace{4mm}
+	\subfloat[][]{\includegraphics[height=6.5cm]{summary_CCE_acc.png}\label{fig:sumCCE}}
+	\caption{Saturated loss value as a function of decoder input latent dimensions for the 16-Split encoder model trained on different heads and with different learning objectives. The curves correspond to the values summarized in Tab.~\ref{tab:16latent}.}
+	\label{fig:sum16s}
+\end{figure}
+\begin{table}[htp]
+	\centering
+	\caption{Loss performance for different heads trained on 16-Split encoders with varying latent space dimensions. The inputs to the different heads are accordingly scaled to the decoder input latent dimensions. All of the heads are referred to as decoders here.}
+		\begin{tabular}{ c | c || c | c | c}
+			\multicolumn{2}{c||}{\textbf{Latent dimensions}} & \multicolumn{3}{c}{\textbf{Decoder loss performance}}\\
+			\hline
+			\textbf{Encoder output} & \textbf{Decoder input} & \textbf{MSE} & \textbf{CCE, Acc.} & \textbf{MAPE}\\
+			\hline
+			1 & 16 & 0.0509 & 0.8782, 70.15\% & 2.3214 \\
+			2 & 32 & 0.0394 & 0.4783, 85.79\% & 1.5861 \\
+			4 & 48 & 0.0226 & 0.3248, 92.66\% & 1.2721 \\
+			8 & 128 & 0.0110 & 0.2991, 93.38\% & 1.2257 \\
+			16 & 256 & 0.0045 & 0.2328, 93.94\% & 1.1663 \\
+		\end{tabular}
+	\label{tab:16latent}
+\end{table}
+\\
+This study showed that above a certain threshold of latent dimensions, the performance on all tasks does not improve much. Classification seem to saturate earlier on in performance. Regression of total energy, as the third objective of trigger primitive information, was not discussed for far. However, since regression of position is similar (and even a bit more advanced) in concept, it was assumed regression of energy would succeed by occupying even less latent capacity.
+
+\subsection{Discussion}
+In summary, the six studies from above show the feasibility and performance of a neural network based approach to trigger primitive building demonstrated in a single stage on a toy problem. The model could be made even more realistic by considering random noise, which simulates pile-up, and creating a more sophisticated architecture consisting of three compression stages instead of one.\\
+\\
+The theoretical information content desired to preserve for trigger primitive generation amounts to \SI{131}{bits}: three bits for class, \SI{32}{bit} floats for position, one \SI{32}{bit} float for energy of the shower-inducuing particle. Considering a shower contained in eight low density sensors, as shown in Fig.~\ref{fig:shower_expl}, such that the data is distributed amongst $8\times3$ ROCs, each accessing 16 trigger cells with \SI{7}{bits} per cell -- an input space of \SI{2688}{bits} -- and using only classification and regression of position, a compression ratio of $99/2688\approx0.037$ should be (theoretically) sufficient to perfectly recover the relevant information of this particular shower. In practice, a perfect recovery of the desired information seems to be hardly tangible, considering a limited amount of resources in which the model should be implemented.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=3.5cm]{cluster.png}
+				\caption{Example of sensor occupancy due to a shower induced by a \SI{250}{GeV} electron \cite{Steen2017}.}
+				\label{fig:shower_expl}
+			\end{center}
+\end{figure}
+\\
+As the above studies showed, a neural network approach can be trained on classification and regression to recover the desired information with fairly accurate precision. Fig.~\ref{fig:classif_distrib} shows the mean classification accuracies per digit class on the entire validation set. In the toy example are more classes than in the original problem. The true positives for the 16-Split with 128 (decoder input) latent dimensions, corresponding to a compression ratio of 0.04, show a maximum variation of 14\%. Although, one cannot directly compare these values to the increase in trigger rates from Fig.~\ref{fig:x}, they gives hope that the neural network based architecture can perform good enough on all incident particle types.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[trim=90 0 170 0, clip, height=14cm]{conf_matrix.png}
+				\caption{Confusion matrix of classification results for 16-split trained on regression and classification at once on validation set. The x-axis shows the predicted class labels, the y-axis the actual labels.}
+				\label{fig:classif_distrib}
+			\end{center}
+\end{figure}
+\\
+Moreover, Fig.~\ref{fig:residuals} shows the mean residuals for regression in the x- and y-coordinates. The closeness of the resdiuals to zero show that there is no systemic deviation between the regressed value and the true coordinates.\\ 
+\begin{figure}[htp]
+			\begin{center}
+				\subfloat[][]{\includegraphics[height=8cm]{x_mean_residuals.png}}
+				\hspace{1mm}
+				\subfloat[][]{\includegraphics[height=8cm]{y_mean_residuals.png}}
+				\caption{Mean residuals and standard deviation for 16-Split (trained on regression and classification at once, and with a latent space of 128 decoder input dimensions) regression on the validation set. (a) shows the x-coordinate (b) the y-coordinate. The positions are calculated from the center of the $28\times28$ digit embedded in the $56\times56$ image and cover the range (14,14) to (42, 42).}
+				\label{fig:residuals}
+			\end{center}
+\end{figure}
+\\
+As mentioned before, the impact of random noise on classification and regression performance could be subject of a future study. Autoencoders are often used for noise reduction, i.e. to produce a noise-free reconstruction from a noisy input image. Furthermore, the architectures discussed in this thesis are not well-optimized. By tweaking the architecture and the training process it is probably possible that better network architectures and parameters could be found that deliver better performance on the relevant objectives.
+
+\end{document}

@@ -1,0 +1,24 @@
+\documentclass[../../main.tex]{subfiles}
+
+\graphicspath{
+	{"./img/01_intro/"}      % for main
+	{"../../img/01_intro/"} % for subfile
+}
+
+\begin{document}
+
+\section{Introduction}
+Particle physics is a branch of physics studying the fundamental constituents of matter and its interactions. The Standard Model (SM) \cite{wiki_sm}, which has been developed over decades, represents a widely-accepted theory in this regard. In recent years, the predictions of the SM and other theories of particle physics have been put to test in particle collision experiments with ever increasing precision. One of the most sophisticated experiments is the Compact Muon Solenoid (CMS) detector \cite{about_cms}, part of the Large Hadron Collider (LHC) complex \cite{lhc1, lhc2, lhc2} at the franco-swiss border near Geneva, Switzerland.\\
+\\
+While the LHC delivers particle collisions with center-of-mass energies of up to $\sqrt{s}=\SI{14}{TeV}$, the detector is used for measuring the stable decay products emerging from collisions in order to infer the primary interactions which, in turn, allow for testing theoretical predictions. The latest endeavor to push the limits of statistical uncertainty is the High Luminosity Upgrade \cite{hl_lhc_tdr}. This upgrade will allow to collect more data per run, due to higher beam intensity and therefore more collisions per bunch crossing.\\
+\\
+In order to cope with the increased amount of collisions, the calorimeter endcaps of the CMS detector need to be replaced along with other parts of CMS. The new endcaps must incorporate improved spatial resolution and be able to withstand higher doses of radiation of up to \SI{e16}{neq/cm}. The High Granularity Calorimeter \cite{tdr_hgcal} (HGCAL, Ch.~\ref{chp:hgcal}) is being designed to satisfy these requirements. It is made of more than \SI{600}{m^2} of silicon sensors in the regions of highest irradiation that are operated by a new type of readout chip \cite{tdr_roc} which integrates several state-of-art technologies in order to achieve the desired dynamic range and time resolution. The contributions of this work to the HGCAL upgrade can be stated as follows:\\
+\\
+To verify that each chip behaves as planned, several chip parameters need to be determined along with their uncertainty. Once determined, the production variation between chips can be mitigated by subsequent fine-tuning of these parameters. Ch.~\ref{chp:char} introduces the stategy for testing chips together with the hardware and software components that were developed and used for a prototype version of the chip. Only chips that perform as needed will be assembled onto printed circuit boards and subsequently used on module prototypes or installed in the final calorimeter.\\
+\\
+An open issue that has to be solved before commissioning the calorimeter is the varying performance of the trigger primitive generator (TPG) \cite{tdr_trig} with type of incident particle. The TPG is part of the trigger system which has the task to reduce the event data rate by selecting only events relevant to the CMS physics program. Recent developments enabled the implementation of hardware-based neural networks in the TPG chain. In theory, a TPG concept based on neural networks could deliver better performance than the current TPG implementation, due to its higher level of generalization, within the required latency and bandwidth. In Ch.~\ref{chp:nn_tpg} such a concept is introduced by assuming real detector constraints and a surrogate dataset. The chapter closes with a discussion about the feasibility of the concept and compares it to systems currently in place.\\
+\\
+In Ch.~6, the conclusions of this work are summarized and an outlook on the still ongoing activities is given.
+
+\end{document}
+

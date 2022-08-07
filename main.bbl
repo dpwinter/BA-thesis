@@ -1,0 +1,457 @@
+\begin{thebibliography}{10}
+
+\bibitem{cern_wiki}
+{CMS Luminosity - Public Results}.
+\newblock
+  \url{https://twiki.cern.ch/twiki/bin/view/CMSPublic/LumiPublicResults#2018_proton_proton_collisions}.
+\newblock Last accessed: 05 January 2021.
+
+\bibitem{convBlock}
+{Convolution operation (convolve)}.
+\newblock Last accessed: 05 January 2021.
+\newblock URL:
+  \url{https://peltarion.com/knowledge-center/documentation/glossary}.
+
+\bibitem{hl_lhc_schedule}
+{HGCAL project Schedule}.
+\newblock
+  \url{https://project-hl-lhc-industry.web.cern.ch/content/project-schedule}.
+\newblock Last accessed: 11 December 2020.
+
+\bibitem{i2c}
+{I2C Info - I2C Bus, Interface and Protocol}.
+\newblock \url{https://i2c.info/i2c-bus-specification}.
+\newblock Last accessed: 19 November 2020.
+
+\bibitem{lhc_ff}
+{LHC Season 2: Facts \& Figures}.
+\newblock
+  \url{https://home.cern/sites/home.web.cern.ch/files/2018-07/factsandfigures-en_0.pdf}.
+\newblock Last accessed: 09 December 2020.
+
+\bibitem{solenoid}
+{Magnets \& Detectors | Taking a closer look at LHC}.
+\newblock
+  \url{https://www.lhc-closer.es/taking_a_closer_look_at_lhc/0.magnets___detectors_i}.
+\newblock Last accessed: 19 January 2021.
+
+\bibitem{wiki_mnist}
+{MNIST Database}.
+\newblock \url{https://en.wikipedia.org/wiki/MNIST_database}.
+\newblock Last accessed: 05 January 2021.
+
+\bibitem{wiki_sm}
+{Standard Model}.
+\newblock \url{https://en.wikipedia.org/wiki/Standard_Model}.
+\newblock Last accessed: 09 December 2020.
+
+\bibitem{pca}
+{Understanding Variational Autoencoders (VAEs}.
+\newblock
+  \url{https://towardsdatascience.com/understanding-variational-autoencoders-vaes-f70510919f73}.
+\newblock Last accessed: 13 January 2021.
+
+\bibitem{zmq}
+{ZeroMQ}.
+\newblock \url{https://zeromq.org/}.
+\newblock Last accessed: 19 November 2020.
+
+\bibitem{schematic:trophy}
+{Trophyboard Schematic}.
+\newblock
+  \url{https://edms.cern.ch/file/2232628/1/Trophy_Board_EDMS2232628V1_Schematics.pdf},
+  10 2019.
+\newblock Last accessed: 16 November 2020.
+
+\bibitem{andre17}
+J.-M. Andre et~al.
+\newblock {The CMS Data Acquisition - Architectures for Phase-2 Upgrade}.
+\newblock {\em J. Phys.: Conf. Ser. 898 032019}, 559, 2017.
+\newblock URL:
+  \url{https://iopscience.iop.org/article/10.1088/1742-6596/898/3/032019}.
+
+\bibitem{anfreville}
+M.~Anfreville et~al.
+\newblock {Laser monitoring system for the CMS lead tungstate crystal
+  calorimeter}.
+\newblock {\em Nucl. Instrum. Meth. A}, 594:292--320, 2008.
+\newblock \href {https://doi.org/10.1016/j.nima.2008.01.104}
+  {\path{doi:10.1016/j.nima.2008.01.104}}.
+
+\bibitem{hl_lhc_tdr}
+G.~Apollinari, A.~I. Béjar, O.~Brüning, P.~Fessia, M.~Lamont, L.~Rossi, and
+  L.~Tavian.
+\newblock {\em {High-Luminosity Large Hadron Collider (HL-LHC): Technical
+  Design Report V. 0.1}}.
+\newblock CERN Yellow Reports: Monographs. CERN, Geneva, 2017.
+\newblock URL: \url{https://cds.cern.ch/record/2284929}, \href
+  {https://doi.org/10.23731/CYRM-2017-004} {\path{doi:10.23731/CYRM-2017-004}}.
+
+\bibitem{si_rep}
+P.~Aspell, P.~Bloch, J.~Hirschauer, M.~Noy, and P.~M. Rubinov.
+\newblock {HGCAL silicon module DAQ and TRG architecture specification}.
+\newblock Technical report, CERN, FNAL, Imperial College, 04 2020.
+\newblock Rev. 4.
+\newblock URL: \url{https://indico.fnal.gov/event/15258/material/1/0.pdf}.
+
+\bibitem{amann02}
+R.~A{\ss}mann, M.~Lamont, and S.~Myers.
+\newblock A brief history of the lep collider.
+\newblock {\em Nuclear Physics B - Proceedings Supplements}, 109(2):17 -- 31,
+  2002.
+\newblock Proceedings of the 7th Topical Seminar.
+\newblock URL:
+  \url{http://www.sciencedirect.com/science/article/pii/S0920563202900058},
+  \href {https://doi.org/https://doi.org/10.1016/S0920-5632(02)90005-8}
+  {\path{doi:https://doi.org/10.1016/S0920-5632(02)90005-8}}.
+
+\bibitem{pileup}
+The ATLAS and CMS Collaboration.
+\newblock {Expected pile-up values at the HL-LHC}.
+\newblock Technical report, {CERN}, 09 2013.
+\newblock URL: \url{https://cds.cern.ch/record/1604492?ln=en}.
+
+\bibitem{tdr_hgcal}
+P.~Azzi, D.~Barney, T.~Bergauer, P.~Dauncey, A.~David, M.~Mannelli, J.~Mans,
+  A.~Marchioro, A.~Martelli, S.~Moccia, M.~Narain, C.~Seez, F.~Sefkow, C.~de~la
+  Taille, and T.~Virdee.
+\newblock {The Phase-2 Upgrade of the CMS endcap calorimeter}.
+\newblock Technical report, CERN, 4 2018.
+\newblock URL: \url{https://cds.cern.ch/record/2293646?ln=en}.
+
+\bibitem{db_hgcal}
+D.~Barney.
+\newblock {CMS High-Granularity Calorimeter (HGCAL)}.
+\newblock
+  \url{https://indico.cern.ch/event/718124/attachments/1624533/2612800/HighGranularityCalorimeter_CERN_200418_small.pdf},
+  4 2018.
+
+\bibitem{baydin18}
+A.~G. Baydin, B.~A. Pearlmutter, A.~A. Radul, and J.~M. Siskind.
+\newblock Automatic differentiation in machine learning: a survey, 2018.
+\newblock URL: \url{https://arxiv.org/abs/1502.05767}, \href
+  {http://arxiv.org/abs/1502.05767} {\path{arXiv:1502.05767}}.
+
+\bibitem{lhc3}
+M.~Benedikt, P.~Collier, V.~Mertens, J.~Poole, and K.~Schindl.
+\newblock {\em {LHC Design Report}}.
+\newblock CERN Yellow Reports: Monographs. CERN, Geneva, 2004.
+\newblock URL: \url{http://cds.cern.ch/record/823808}, \href
+  {https://doi.org/10.5170/CERN-2004-003-V-3}
+  {\path{doi:10.5170/CERN-2004-003-V-3}}.
+
+\bibitem{cms_endcap}
+L.~Benussi, Bianco S., et~al.
+\newblock {CMS}.
+\newblock Technical report, {CERN}, 2012.
+\newblock URL: \url{https://www.lnf.infn.it/rapatt/2015/CMS.pdf}.
+
+\bibitem{sensor}
+E.~Brodolin.
+\newblock {Silicon sensors for the CMS HGCAL upgrade: Challenges, sensor design
+  \& electrical characterization}.
+\newblock Technical report, {CERN}, 11 2019.
+\newblock URL: \url{https://arxiv.org/abs/2003.02461}.
+
+\bibitem{lhc1}
+O.~S. Brüning, P.~Collier, P.~Lebrun, S.~Myers, R.~Ostojic, J.~Poole, and
+  P.~Proudlock.
+\newblock {\em {LHC Design Report}}.
+\newblock CERN Yellow Reports: Monographs. CERN, Geneva, 2004.
+\newblock URL: \url{http://cds.cern.ch/record/782076}, \href
+  {https://doi.org/10.5170/CERN-2004-003-V-1}
+  {\path{doi:10.5170/CERN-2004-003-V-1}}.
+
+\bibitem{lhc2}
+O.~S. Brüning, P.~Collier, P.~Lebrun, S.~Myers, R.~Ostojic, J.~Poole, and
+  P.~Proudlock.
+\newblock {\em {LHC Design Report}}.
+\newblock CERN Yellow Reports: Monographs. CERN, Geneva, 2004.
+\newblock URL: \url{http://cds.cern.ch/record/815187}, \href
+  {https://doi.org/10.5170/CERN-2004-003-V-2}
+  {\path{doi:10.5170/CERN-2004-003-V-2}}.
+
+\bibitem{fcholet17}
+F.~Chollet.
+\newblock {\em Deep Learning with Python}.
+\newblock Manning Publications Co., USA, 1st edition, 2017.
+\newblock URL: \url{https://www.manning.com/books/deep-learning-with-python}.
+
+\bibitem{about_cms}
+{CMS Collaboration}.
+\newblock {About CMS}.
+\newblock \url{https://cms.cern/detector}.
+\newblock Last accessed: 09 December 2020.
+
+\bibitem{CMS:2010kua}
+{CMS Collaboration}.
+\newblock {Single-Particle Response in the CMS Calorimeters}.
+\newblock Technical Report CMS-PAS-JME-10-008, CERN, Geneva, 2010.
+\newblock URL: \url{http://cds.cern.ch/record/1279141}.
+
+\bibitem{Bayatian:922757}
+CMS Collaboration.
+\newblock {\em {CMS Physics: Technical Design Report Volume 1: Detector
+  Performance and Software}}.
+\newblock Technical Design Report CMS. CERN, Geneva, 2006.
+\newblock URL: \url{https://cds.cern.ch/record/922757}.
+
+\bibitem{Collaboration_2008}
+CMS Collaboration.
+\newblock The {CMS} experiment at the {CERN} {LHC}.
+\newblock {\em Journal of Instrumentation}, 3(08):S08004--S08004, aug 2008.
+\newblock URL: \url{https://doi.org/10.1088%2F1748-0221%2F3%2F08%2Fs08004},
+  \href {https://doi.org/10.1088/1748-0221/3/08/s08004}
+  {\path{doi:10.1088/1748-0221/3/08/s08004}}.
+
+\bibitem{phase2}
+D.~Contardo, M.~Klute, J.~Mans, L.~Silvestris, and J.~Butler.
+\newblock {Technical Proposal for the Phase-II Upgrade of the CMS Detector}.
+\newblock Technical report, {CERN}, 06 2015.
+\newblock URL: \url{https://cds.cern.ch/record/2020886}.
+
+\bibitem{pd}
+P.~Drannan.
+\newblock {Understanding MOSFET Mismatch for Analog Design}.
+\newblock {\em {IEEE Journal of Solid-State Circuits}}, 38, No.3, 3 2003.
+\newblock URL: \url{https://ieeexplore.ieee.org/document/1183852}.
+
+\bibitem{cms_overview}
+A.~Duperrin.
+\newblock {High Luminosity yellow report: what does HL-LHC physics look like in
+  ATLAS and CMS?}
+\newblock Sep 2019.
+\newblock URL: \url{http://cds.cern.ch/record/2689937}.
+
+\bibitem{brout64}
+F.~Englert and R.~Brout.
+\newblock Broken symmetry and the mass of gauge vector mesons.
+\newblock {\em Phys. Rev. Lett.}, 13:321--323, Aug 1964.
+\newblock URL: \url{https://link.aps.org/doi/10.1103/PhysRevLett.13.321}, \href
+  {https://doi.org/10.1103/PhysRevLett.13.321}
+  {\path{doi:10.1103/PhysRevLett.13.321}}.
+
+\bibitem{calo03}
+C.~W. Fabjan and F.~Gianotti.
+\newblock {Calorimetry for Particle Physics}.
+\newblock {\em {Rev. Mod. Phys.}}, 75:1243--1286, 10 2003.
+\newblock URL: \url{https://link.aps.org/doi/10.1103/RevModPhys.75.1243}, \href
+  {https://doi.org/10.1103/RevModPhys.75.1243}
+  {\path{doi:10.1103/RevModPhys.75.1243}}.
+
+\bibitem{Goodfellow16}
+I.~Goodfellow, Y.~Bengio, and A.~Courville.
+\newblock {\em Deep Learning}.
+\newblock MIT Press, 2016.
+\newblock \url{http://www.deeplearningbook.org}.
+
+\bibitem{higgs64}
+P.~W. Higgs.
+\newblock Broken symmetries, massless particles and gauge fields.
+\newblock {\em Physics Letters}, 12(2):132 -- 133, 1964.
+\newblock URL:
+  \url{http://www.sciencedirect.com/science/article/pii/0031916364911369},
+  \href {https://doi.org/https://doi.org/10.1016/0031-9163(64)91136-9}
+  {\path{doi:https://doi.org/10.1016/0031-9163(64)91136-9}}.
+
+\bibitem{jahr15}
+K.~Jahr, R.~Schlich, K.~Dragos, and K.~Smarsly.
+\newblock {\em {Decentralized autonomous fault detection in wireless structural
+  health monitoring systems using structural response data}}.
+\newblock 07 2015.
+\newblock URL:
+  \url{https://www.researchgate.net/publication/289479445_Decentralized_autonomous_fault_detection_in_wireless_structural_health_monitoring_systems_using_structural_response_data}.
+
+\bibitem{jordan_ae}
+J.~Jordan.
+\newblock {Introduction to autoencoders.}
+\newblock \url{https://www.jeremyjordan.me/autoencoders/}.
+\newblock Last accessed: 08 January 2021.
+
+\bibitem{sipm_rep}
+T.~Kolberg, K.~Kruger, and J.~Mans.
+\newblock {Overall Layout information for the scintillator HGCAL}.
+\newblock Technical report, CERN, DESY, FSU, UMN, FNAL, 09 2020.
+\newblock EDMS No. 2328490.
+\newblock URL:
+  \url{https://cms.desy.de/sites/sites_desygroups/sites_extern/site_cms/content/e78437/e83421/e85075/e85081/e121141/HGCAL-Varna.pdf}.
+
+\bibitem{lecun_mnist}
+Y.~Lecun.
+\newblock {The MNIST Database of handwritten digits}.
+\newblock \url{http://yann.lecun.com/exdb/mnist/}.
+\newblock Last accessed: 08 January 2021.
+
+\bibitem{al}
+A.~Lobanov.
+\newblock {ProbeDC and CalibDAC values from HGCROC2 test session 1}.
+\newblock
+  \url{https://readthedocs.web.cern.ch/display/HGCELE/2020/07/14/ProbeDC+and+CalibDAC+values+from+HGCROC2+test+session+1}.
+\newblock Last accessed: 20 November 2020.
+
+\bibitem{menshawy18}
+A.~Menshawy.
+\newblock {\em Deep Learning By Example}.
+\newblock Packt Publishing Limited, 2018.
+\newblock URL:
+  \url{https://www.oreilly.com/library/view/deep-learning-by/9781788399906/}.
+
+\bibitem{acm}
+S.~Mittal.
+\newblock {A Survey Of Architectural Techniques for Managing Process
+  Variation}.
+\newblock {\em ACM Computing Surveys 48(4)}, 2 2016.
+\newblock URL:
+  \url{https://www.researchgate.net/publication/285926063_A_Survey_Of_Architectural_Techniques_for_Managing_Process_Variation}.
+
+\bibitem{nielsen15}
+M.~A. Nielsen.
+\newblock {\em {Neural Networks and Deep Learning}}.
+\newblock {Determination Press}, 2015.
+\newblock URL: \url{http://neuralnetworksanddeeplearning.com/}.
+
+\bibitem{colah_nn}
+C.~Olah.
+\newblock {Neural Networks, Manifolds, and Topology}.
+\newblock \url{http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/}.
+\newblock Last accessed: 08 January 2021.
+
+\bibitem{pp}
+P.~Paulitsch.
+\newblock {The Silicon Sensors for the High Granularity Calorimeter of CMS}.
+\newblock Technical report, {CERN}, 06 2020.
+\newblock URL: \url{https://arxiv.org/abs/2002.11449}, \href
+  {https://doi.org/arXiv:2002.11449v3} {\path{doi:arXiv:2002.11449v3}}.
+
+\bibitem{tq}
+T.~Quast.
+\newblock {\em {Q}ualification, performance validation and fast generative
+  modelling of beam test calorimeter prototypes for the {CMS} calorimeter
+  endcap upgrade}.
+\newblock Dissertation, RWTH Aachen University, Aachen, 2020.
+\newblock URL: \url{https://publications.rwth-aachen.de/record/792901}, \href
+  {https://doi.org/10.18154/RWTH-2020-06473}
+  {\path{doi:10.18154/RWTH-2020-06473}}.
+
+\bibitem{mr}
+M.~Rieger.
+\newblock {\em {Search for Higgs Boson production in association with Top
+  Quarks and decaying into Bottom Quarks using deep learning techniques with
+  the CMS experiment}}.
+\newblock PhD thesis, RWTH Aachen University, 6 2019.
+\newblock URL: \url{https://publications.rwth-aachen.de/record/763526}.
+
+\bibitem{awr}
+A.~W. Rose.
+\newblock {\em {The Level-1 Trigger of the CMS experiment at the LHC and
+  Super-LHC}}.
+\newblock PhD thesis, Imperial College London, 5 2009.
+\newblock URL:
+  \url{http://www.hep.ph.ic.ac.uk/~awr01/thesis/thesis.v1.1.dbl.pdf}.
+
+\bibitem{trig_algos}
+J.-B. Sauvan.
+\newblock {Updates on FE data reduction studies}, {01} {2020}.
+\newblock URL:
+  \url{https://indico.cern.ch/event/879499/contributions/3714002/attachments/1978368/3293454/20.01.30_FE.studies.summary.pdf}.
+
+\bibitem{tdr_trig}
+W.~H. Smith, G.~Wrochna, et~al.
+\newblock {The TriDAS Project: The Trigger Systems}.
+\newblock Technical report, CERN, 12 2000.
+\newblock URL: \url{https://cds.cern.ch/record/706847?ln=en}.
+
+\bibitem{sonneveld18}
+J.~Sonneveld.
+\newblock {Commissioning and first results from the CMS phase 1 upgrade pixel
+  detector}, 2018.
+\newblock URL: \url{https://arxiv.org/pdf/1807.08987}, \href
+  {http://arxiv.org/abs/1807.08987} {\path{arXiv:1807.08987}}.
+
+\bibitem{speer06}
+T.~Speer, R.~Frühwirth, A.~Strandlie, T.~Todorov, and M.~Winkler.
+\newblock Track reconstruction in the cms tracker.
+\newblock {\em Nuclear Instruments and Methods in Physics Research Section A:
+  Accelerators, Spectrometers, Detectors and Associated Equipment},
+  559:143--147, 04 2006.
+\newblock \href {https://doi.org/10.1016/j.nima.2005.11.207}
+  {\path{doi:10.1016/j.nima.2005.11.207}}.
+
+\bibitem{Steen2017}
+A.~Steen.
+\newblock {The CMS HGCAL detector for the HL-LHC upgrade}.
+\newblock 2017.
+\newblock URL: \url{http://cds.cern.ch/record/2293145}.
+
+\bibitem{calo_rev}
+A.~Straessner.
+\newblock {Overview of the Calorimeter Readout Upgrades}.
+\newblock Apr 2018.
+\newblock URL: \url{https://cds.cern.ch/record/2314636}.
+
+\bibitem{pdg}
+M.~Tanabashi et~al.
+\newblock Passage of particles through matter.
+\newblock {\em Phys. Rev. D 98}, 030001, 2018.
+\newblock Updated 2019.
+\newblock URL:
+  \url{http://pdg.lbl.gov/2019/reviews/rpp2018-rev-passage-particles-matter.pdf}.
+
+\bibitem{ina250}
+{Texas Instruments}.
+\newblock {\em {INA250 36-V, Low- or High-Side, Bidirectional, Zero-Drift
+  Current-Shunt Monitor with Precision Integrated Shunt Resistor}}, {04}
+  {2015}.
+\newblock {Revised Dec. 2015}.
+\newblock URL: \url{https://www.ti.com/product/INA250}.
+
+\bibitem{tdr_roc}
+D.~Thienpont.
+\newblock {HGCROC2/2A Datasheet}.
+\newblock Technical report, CERN, 2 2019.
+\newblock URL:
+  \url{https://readthedocs.web.cern.ch/download/attachments/131957941/HGCROC2_datasheet_v1_draft.pdf?version=1&modificationDate=1580552871000&api=v2}.
+
+\bibitem{vlad20}
+V.~Vlădăreanu et~al.
+\newblock {Detection of Anomalous Behavior in Modern Smartphones Using Software
+  Sensor-Based Data}.
+\newblock {\em MDPI}, 03 2020.
+\newblock URL: \url{https://www.mdpi.com/1424-8220/20/10/2768}.
+
+\bibitem{wigmans08}
+R.~Wigmans.
+\newblock {Calorimetry}.
+\newblock {\em Scientifica Acta 2}, No. 1, 18 -- 55, 2008.
+\newblock URL:
+  \url{http://lappweb.in2p3.fr/~chefdevi/Detector_reports/Calorimetry/Wigmans.pdf}.
+
+\bibitem{axi}
+{Xilinx}.
+\newblock {\em {AXI Reference Guide}}, {01} {2012}.
+\newblock {Version 13.4}.
+\newblock URL:
+  \url{https://www.xilinx.com/support/documentation/ip_documentation/axi_ref_guide/latest/ug1037-vivado-axi-reference-guide.pdf}.
+
+\bibitem{hgcal}
+R.~Yohay.
+\newblock {The CMS High Granularity Calorimeter for High Luminosity LHC}.
+\newblock {\em Nuclear Instruments and Methods in Physics Research Section A:
+  Accelerators, Spectrometers, Detectors and Associated Equipment}, 958:162151,
+  2020.
+\newblock Proceedings of the Vienna Conference on Instrumentation 2019.
+\newblock URL:
+  \url{http://www.sciencedirect.com/science/article/pii/S0168900219306023},
+  \href {https://doi.org/https://doi.org/10.1016/j.nima.2019.04.105}
+  {\path{doi:https://doi.org/10.1016/j.nima.2019.04.105}}.
+
+\bibitem{zhang}
+L.~Zhang, D.~Bailleux, A.~Bornheim, and R.-Y. Zhu.
+\newblock {Performance of the Monitoring Light Source for the CMS Lead
+  Tungstate Crystal Calorimeter}.
+\newblock {\em Nuclear Science, IEEE Transactions on}, 52:1123 -- 1130, 09
+  2005.
+\newblock \href {https://doi.org/10.1109/TNS.2005.852661}
+  {\path{doi:10.1109/TNS.2005.852661}}.
+
+\end{thebibliography}

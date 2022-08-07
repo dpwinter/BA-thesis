@@ -1,0 +1,114 @@
+\documentclass[../../main.tex]{subfiles}
+
+\graphicspath{
+	{"./img/02_cern/"}      % for main
+	{"../../img/02_cern/"} % for subfile
+}
+
+\begin{document}
+
+\section{Particle physics at CERN}\label{sec:cern}
+In this section the Standard Model (SM), the Large Hadron Collider (LHC) and the Compact Muon Solenoid (CMS) experiment are introduced as the foundations for doing particle physics at the European Laboratory for Particle Physics (CERN). Each of these topics is the product of decades of research and development undertaken by a myriad of researchers and engineers from all around the world. The following paragraphs, inspired by the presentation in Ref. \cite{mr}, discuss them briefly.
+
+\subsection{Standard Model}\label{sec:sm}
+Particle physics deals with the formulation and validation of rules for matter particles and the interaction between them. The Standard Model of particle physics (SM) represents our current understanding of these rules compiled into a theoretical framework. The SM is a consistent, finite theory that allows predictions to be made of fundamental particle interactions that have been experimentally verified with very high precision. It introduces the elementary matter particles quarks and leptons, together with their corresponding antiparticles and three elementary interactions between them acting on subatomic scales. The fourth known force, gravity, has not yet been reconciled with the SM. However, if one compares the magnitudes of all these forces gravity is by far the weakest and its influence on matter particles on microscopic scales can be considered negligible.\\
+\\
+The Standard Model is a quantum field theory based on special relativity, quantum mechanics, and classical field theory. It describes electromagnetic, weak, and strong interactions between elementary particles as couplings of quantized fields that span the entire universe and in which the observable particles manifest as field excitations. As seen in Fig.~\ref{fig:sm} the SM divides the fundamental particles in four groups. Leptons and quarks are the matter particles, called fermions. Each matter particle has a corresponding antiparticle (not shown in Fig.~\ref{fig:sm}) with opposite quantum numbers. Quarks have a fractional charge compared to the electron and are subject to strong, weak and electromagnetic interactions while leptons have integer charge and only interact weakly and electromagnetically. The exceptions are the leptonic neutrinos that are electrically neutral and only interact via the weak force. The understood universe is comprised of protons, neutrons and electrons which are, except the electron, composite particles made up of three quarks each. Particles that are made of quarks are called hadrons. Beside many more classes of composite particles, only hadrons are of importance for the following chapters.
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=8cm]{sm.jpg}
+		\caption{Elementary particles in the Standard Model. Antiparticles are not shown. Figure reproduced from Ref. \cite{wiki_sm}.}
+		\label{fig:sm}
+	\end{center}
+\end{figure}
+\\
+The bosons are the force-mediating particles by which the matter particles interact. Similar to the fermions the bosons are described as excitations of their respective fields. As result of a symmetry property called gauge invariance in the mathematical formalism of the SM, the boson fields are referred to as gauge fields and the bosons called (vector) gauge bosons. The Higgs boson on the other hand is a scalar boson that does not mediate any force. It describes a quantized excitation in the Higgs field by which fundamental particles acquire their masses via the Brout-Englert-Higgs mechanism \cite{higgs64, brout64}. Albeit its theoretical and experimental success, the Standard Model leaves many questions open which physicists try to answer by building particle accelerators to collide particles in order to investigate their interactions and collision products.
+
+\subsection{Large Hadron Collider}\label{sec:lhc}
+The Large Hadron Collider (LHC) \cite{lhc1, lhc2, lhc3} is the largest and most powerful particle accelerator, storage ring, and collider ever built. It provides proton-proton\footnote{The LHC also collides ions, which will not be considered in this thesis.} collisions at energies up to \SI{14}{TeV} at four interaction points to study different aspects of the Standard Model and beyond.\\
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=10.5cm]{lhc2.jpg}
+		\caption{The CERN accelerator complex \cite{lhc_ff}.}
+		\label{fig:lhc}
+	\end{center}
+\end{figure}
+\\
+The LHC is located at CERN on the Franco-Swiss border near Switzerland, Geneva in a circular tunnel \SIrange{45}{170}{m} underground that was formerly used for the Large Electron-Positron Collider (LEP) \cite{amann02}. The accelerator measures \SI{26.7}{km} in circumference in which hadrons, which are composed of two or more quarks, are accelerated to nearly the speed of light in two parallel, evacuated beam pipes until they are brought to collision at one of the four collision points. In order to reach high collision energies the hadrons are pre-accelerated in a chain of four preceding beam facilities: LINAC 4, Proton Synchrotron Booster, Proton Synchrotron and Super Proton Synchrotron (Fig. \ref{fig:lhc}), to reach proton energies of \SI{160}{MeV}, \SI{1.4}{GeV}, \SI{25}{GeV} and \SI{450}{GeV}, respectively.\\
+\\
+Eventually, two beams are injected into opposite directions in the two beam pipes of the LHC. Inside the LHC the particles undergo further acceleration with each orbit via resonant waves of electromagnetic fields, generated in eight radio-frequency cavities. Furthermore, two beams are separated in so-called bunches (this happens already in the Super Proton Synchrotron). In the case of protons, a particle bunch consists of \num{1.2e11} protons that are accelerated to a peak energy of \SI{7}{TeV} and collided with another bunch at a center-of-mass energy of \SI{14}{TeV}. The collision of particle bunches is referred to as bunch crossing (BX) which happens during operation in the LHC at a frequency of up to \SI{40}{MHz} (every \SI{25}{ns}) \cite{lhc_ff}.\\
+\\
+In order to bend the particles' motions inside the beam pipes into a circular trajectory, 1232 dipole magnets are used. Since the required magnetic field strength of up to \SI{8.3}{T} can only be achieved by superconduction the dipole magnets are made of NbTi operated at a temperature of \SI{1.9}{K}. Further multipole magnets are used to ensure that the beam stays focused despite the electromagnetic repulsion that pushes the charged particles apart. At the interaction points of the ATLAS and CMS experiments the beam is confined to a diameter of about \SI{10}{\micro\metre} before collision \cite{lhc_ff}.\\
+\\
+All quantities related to the collider configuration can be summarized into a single quantity, the instantaneous luminosity $L$, that allows to calculate the interaction rate of a certain process with cross section $\sigma$ as
+\begin{equation}
+	\frac{dN}{dt} = \sigma \cdot L
+\end{equation}
+\begin{equation}
+	\textrm{with}\quad L = \frac{N_{b}^2n_bf_\text{orb}\gamma_{\gamma} F}{4\pi \epsilon_n\beta^*},
+\end{equation}
+with number of particles per bunch $N_b$, number of bunches per beam $n_b$, orbit frequency $f_\text{orb}$ (around LHC circumference), relativistic gamma factor $\gamma_{\gamma} = E/m$, geometric reduction factor $F$ due to inclined beam profiles, the normalized transverse beam emittance $\epsilon_n$ and the beta factor $\beta^*$ at the collision point. The LHC was designed to provide an instantaneous luminosity of \SI{\sim e34}{cm^{-2}.s^{-1}}. The integrated luminosity $\mathcal{L}$ can be used to calculate the expected yield for a process with given cross section $\sigma$ given all data the LHC collected in a given time:
+\begin{equation}
+	N = \int \frac{dN}{dt} \, dt = \sigma\cdot \int L\,dt = \sigma\cdot\mathcal{L}.
+\end{equation}
+\\
+Whereas the instantaneous nominal peak luminosity in the last LHC run (Run 2) in 2016--2018 reached \SI{\sim 2e34}{cm^{-2}s^{-1}} \cite{cern_wiki}, this value will be raised to \SI{5e34}{cm^{-2}s^{-1}} and possibly to \SI{7.5e34}{cm^{-2}s^{-1}} \cite{andre17} with the implementation of the High Luminosity Upgrade \cite{hl_lhc_tdr} in 2025/26 (Fig.~\ref{fig:hl_lhc}). While this implies the collection of more events and thereby more significant statistics it also poses major challenges on the accelerator and detectors located at the interaction points. Some of the challenges posed by the High Luminosity Upgrade on one particular detector, the Compact Muon Solenoid, are addressed in this thesis.
+
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=8cm]{lhc3.pdf}
+		\caption{Future plans for the LHC \cite{hl_lhc_schedule}.}
+		\label{fig:hl_lhc}
+	\end{center}
+\end{figure}
+
+\subsection{Compact Muon Solenoid Experiment}\label{sec:cms}
+The Compact Muon Solenoid (CMS) \cite{Collaboration_2008,Bayatian:922757} is a large multipurpose particle detector for investigating collisions at very high energies and instantaneous luminosities. The CMS detector is located about \SI{100}{m} under ground near the village of Cessy in France at LHC interaction point five. It has a length of \SI{21.6}{m}, a diameter of \SI{14.6}{m} and a mass of about \SI{14000}{t}.\\
+\\
+The detector can be thought of as a large high-speed video camera \cite{tq} taking three-dimensional high resolution ($\sim\num{100e6}$ pixels) pictures at a frame rate of \SI{40}{MHz} (one picture per BX) but instead of light intensities the pixels show energy deposits caused by particles created in the collision events.\\
+\\
+Except for neutrinos, the CMS detector is designed to measure all stable particles\footnote{Stable refers to relativistic particles that do not decay while traversing the detector.} produced in collision events \cite{mr}. Therefore, and because of its accuracy in energy and momentum measurements as well as its good spatial resolution, the CMS detector allows for precise reconstruction of intermediate, unstable particles, making it a versatile detector useful in the analysis of a wide range of collision end products.\\
+\\
+Measured objects in the CMS detector are described by the coordinate system shown in Fig.~\ref{fig:cms_coord}. The origin is placed at the collision point, while the the x-axis points towards the center of the LHC and the y-axis points in the upwards direction. Thereby, the x- and y-axis span the transverse plane in which directions are defined by the azimuthal angle $\phi$ which is zero in the direction of the x-axis. The z-axis is perpendicular to the transverse plane and parallel to the beam, pointing in counter-clockwise longitudinal direction. The polar angle $\theta$ is often encapsulated in the pseudorapidity $\eta$ as
+\begin{equation}
+	\eta = -\ln\bigg[\tan\bigg(\frac{\theta}{2}\bigg)\bigg] = \frac{1}{2}\ln\bigg(\frac{\left\Vert \vec{p} \right\Vert+p_z}{\left\Vert \vec{p} \right\Vert-p_z}\bigg) = \arctanh\bigg(\frac{p_z}{\left\Vert \vec{p} \right\Vert}\bigg),
+\end{equation}
+with $\vec{p}$ being the three-momentum and $p_z$ being its z-component, such that $\eta=0$ for $z=0$ and $\eta=\infty$ along the beam pipe on the z-axis. Pseudorapidity is the preferred quantity for measuring longitudinal directions since differences in pseudorapidity $\Delta\eta$ are Lorentz-invariant and do not depend on longitudinal boosts of certain particles.\\
+\begin{figure}[htp]
+	\begin{center}
+		\includegraphics[height=8cm]{cms_coords.png}
+		\caption{Coordinate system used by the CMS experiment. The x-axis points to the center of the LHC, the y-axis points upwards, and the z-axis points in counter-clockwise direction along the beam \cite{mr}.}
+		\label{fig:cms_coord}
+	\end{center}
+\end{figure}
+\\
+In order to measure the type and kinematic properties of particles, the CMS detector includes several sub-detectors arranged cylindrically around the beam pipe and symmetrical to the interaction point. Measurement quantities of interest are the vectorial three-momentum $\vec{p}$, energy $E$, the sign of charge, and the origin (interaction vertex) of the particle. The latter becomes important to distinguish between particles traversing the detector at the same time. In 2018, at peak luminosity, CMS registered an average of 40 simultaneous events caused by inelastic proton-proton collisions in every bunch crossing. Because these events lead to additional occupancy of detector cells, they are referred to as pile-up. Determining the interaction vertex of an event allows for a better allocation of the detector signals despite large amounts of pile-up.\\
+\\
+The CMS detector allows to measure protons, neutrons, kaons, pions, electrons, photons and muons. Neutrinos can be indirectly detected by inference from missing transverse momentum \cite{awr}. In the following, the sub-detector systems of CMS, seen in Fig.~\ref{fig:cms}, are discussed.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[height=12cm]{cms.png}
+		\caption{The CMS detector \cite{cms_overview}.}
+		\label{fig:cms}
+	\end{center}
+\end{figure}
+
+\subsubsection*{\underline{Tracking System}}
+The inner tracking system consists of two components: Concentric silicon-pixel layers and silicon-strip detectors in close proximity (\SI{\sim4}{cm}) to the interaction point. The aim of the tracking system is to identify charged particles and measure their trajectories, momenta, and charge signs. The detection principle is based on silicon semiconductors operated with reverse-bias voltage so that traversing charged particles cause a measurable signal in the depletion region by ionization, which is referred to as a tracker hit. Tracker hits can be combined using advanced pattern recognition algorithms to build particle tracks \cite{speer06}. The tracking system was designed with the expected particle flux at various distances from the interaction point in mind to achieve the best possible spatial resolution. In total, the tracking system provides more than 100 million readout channels \cite{Collaboration_2008, sonneveld18}.
+
+\subsubsection*{\underline{Calorimeter System}}
+The calorimeter system includes the electromagnetic calorimeter (ECAL) and the hadronic calorimeter (HCAL) to measure energy and direction of traversing particles. ECAL comprises barrel ECAL (EB), endcap ECAL (EE) and endcap preshower (ES); HCAL comprises barrel HCAL (HB), endcap HCAL (HE) and forward HCAL (HF). While the ECAL detects particles that interact electromagnetically, mostly electrons, positrons and photons, the HCAL is designed to detect charged and neutral hadrons, mostly protons, neutrons, charged pions and kaons. Particles except for muons and neutrinos are fully absorbed inside the calorimeters. The ECAL is a homogeneous calorimeter that includes \SI{\sim70000} lead tungstate crystals (PbWO$_4$) that produce scintillation light when excited by a traversing charged particle. The intensity of the scintillation light is proportional to the energy of the incident particle. HCAL on the other hand is a sampling calorimeter that consists of alternating layers of non-magnetic brass absorber material and plastic scintillators \cite{Collaboration_2008,Bayatian:922757}. Strongly interacting particles not contained in the ECAL will be stopped by the dense brass absorber layers in which the traversing particle loses energy by creating hadronic showers which excite the subsequent scintillators that in turn produce detectable light. This light is guided via embedded wavelength-shifting fibers via \SI{\sim7000} channels to the readout system \cite{CMS:2010kua}. Additionally, photon-sensitive preshower detectors are placed in front of the endcap ECAL to aid in particle identification for rejection of background processes.
+
+\subsubsection*{\underline{Solenoid Magnet}}
+The large solenoid magnet encapsulates both the calorimeter system and tracking system in which it induces a strong magnetic field that is returned by three outer layers of return yoke which are interspersed with the muon detectors. The target of the solenoid is to introduce a strong enough field such that charged particles are forced to bend in a certain direction while traversing the tracking and calorimeter systems which allows to identify charge and measure momentum \cite{Collaboration_2008,Bayatian:922757}. The solenoid magnet is composed of five \SI{2.5}{m}-long modules, which are assembled into a hollow cylinder of length $L=\SI{12.5}{m}$ and diameter of \SI{6.3}{m}. Each module consists of an aluminium shell with four internal layers of winding, each with 109 turns, such that all modules together have $N=5\cdot4\cdot109=2180$ turns, which are operated in a vacuum with a current of up to $I=\SI{18000}{A}$, thereby creating a magnetic field of $B=\mu_0NI/L\approx\SI{4}{T}$ \cite{solenoid}. The large magnetic field strength is achieved by superconducting NbTi cables as coil material that are cooled down to \SI{4.5}{K}. The solenoid magnet is the largest of its type ever built \cite{about_cms}.
+
+\subsubsection*{\underline{Muon Detectors}}
+The outermost sub-detector forms the muon detection system, interspersed by the iron return yoke of the solenoid magnet. Ideally, the muon detectors are only traversed by muons and neutrinos, since all other particles should have been fully absorbed inside the calorimeters. Hits detected by the muon system are combined with the particle tracks recorded by the tracking system in order to identify muons and measure their momenta and charges. The muon detectors are gaseous detectors, producing electron avalanches through ionization of the gas molecules when traversed by a charged particle causing measurable signals. Like the calorimeters, the muon detectors are split in two sections for the barrel region and the two endcaps that use two different detection techniques. Both barrel and endcaps additionally include resistive plate chambers with very fast response times for trigger purposes.
+
+\subsubsection*{\underline{Trigger System}}
+At a levelled instantaneous luminosity L=\SI{5e34}{cm^{-2}s^{-1}} and 140 pile-up events in the high luminosity environment as well as a bunch crossing rate of \SI{40}{MHz}, the LHC produces $\num{5.6e9}$ proton-proton collision events every second at the interaction point of the CMS experiment \cite{Collaboration_2008,Bayatian:922757}. Considering all event information provided by the detector one bunch crossing yields $\sim$ \SI{4.5}{MB} of event data which would lead to \SI{252}{TB} event data per second if it were all stored on disk. The data acquisition (DAQ) system has neither readout bandwidth nor storage capability to handle all this data - the peak storage rate of the DAQ system is \SI{27}{GB/s} \cite{andre17}. The trigger system was designed to filter selectively (trigger on) events at a rate of \SI{40}{MHz} based on a realtime analysis using coarse-grained event data and thereby reducing the storage rate of events. Only after the trigger system accepts an event is it written to permanent storage. The realtime analysis filters those events that exhibit signatures of processes that are interesting for the CMS physics program \cite{mr}. In order to record unknown processes the triggering thresholds can be set sufficiently low. The CMS Trigger is divided in two stages The Level-1 trigger (L1T) and the high-level trigger (HLT). The L1T is a high bandwidth, fixed latency system based on ASICs (Application Specific Integrated Circuits) and FPGAs (Field Programmable Gate Arrays) located on-detector and in a neighboring underground cavern respectively, while the software-based HLT runs on a computing cluster of 3000 compute units \cite{tdr_trig}.\\
+\\
+Recorded detector data can be held in internal buffers of the on-detector readout systems for up to \SI{3.2}{\micro s}. During this time, coarse-grained data from calorimeter and muon systems is processed by the L1T until a trigger decision is issued. The buffers account for the latency of the trigger system, however a decision is issued every \SI{25}{ns} with each bunch crossing. During this process the L1T constructs so called \textit{trigger primitives} which are 3-dimensional energy clusters representing muons, electrons, photons, jets, or global sums of transverse or missing transverse energy. Events that the L1T accepts are further redirected to the HLT. The HLT includes tracker data, tries to reconstruct the Level-1 trigger decision and filters the events by more strict constraints. In total, the L1T reduces the storage data rate from \SI{40}{MHz} to \SI{100 (500)}{kHz} by a factor of 400 (80) and the HLT further reduces it from 100 (500) kHz to 0.4 (5) kHz by factor 250 (100) in the Phase-1 (Phase-2) upgrade of the trigger system \cite{awr,andre17}. The generation of trigger primitives for a specific sub-detector will be discussed further in the next chapter. 
+
+\end{document}

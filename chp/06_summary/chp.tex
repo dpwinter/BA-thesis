@@ -1,0 +1,21 @@
+\documentclass[../../main.tex]{subfiles}
+
+\graphicspath{
+	{"./img/06_summary/"}      % for main
+	{"../../img/06_summary/"} % for subfile
+}
+
+\begin{document}
+
+\section{Summary \& Outlook}
+As the development on the HGCAL approaches the production phase, quality control during the fabrication of detector components and suitable implementation concepts of its subsystems need to be in place. The main contributions to these ends presented in this thesis are the development of software for readout chip configuration, the creation and analysis of online chip testing procedures, as well as the implementation of a neural network based concept architecture involving the HGCAL trigger primitive generator.\\
+\\
+The original motivation for the first main contribution of developing software for chip configuration was to enable running testing procedures on different test systems from a remote computer in different testing facilities. The software\footnote{\url{https://gitlab.cern.ch/hgcal-daq-sw/zmq_i2c}} developed in this thesis satisfies these requirements by exposing a common chip API, while handling the detection of different test systems internally and by providing an ethernet based server/client interface which accepts human-readable configuration files that are converted to register level and subsequently written to the chips. Furthermore, the software introduces caching and certain I/O optimizations that enable faster configuration and a layer of fault tolerance. Due to its simple installation and ease of use, the software has been and is a critical component for chip tests in the past and in the future.\\
+\\
+The second main contribution is the testing of 223 single chips and 54 hexaboards in four testing campaigns (June--August 2019). These tests contributed to the development of HGCAL in two significant ways. First, they provided the data, which is being analyzed at the time of writing, in order to determine the characteristics of chip populations. Secondly, they informed the development process of the frontend electronics components by providing feedback to the board- and chip-designers. The test results led to a better understanding of the chip parameters, for example the connection between the shaper reference voltage setting and the overall dynamic range, as well as to further investigations into revealing issues, like noise and unexpected TDC measurements, and to the redesign of the hexaboard.\\
+\\
+The final main outcome of this thesis is the development of a prototype to deliver a preliminary proof-of-concept showing the feasibility of a multi-stage, end-to-end trained neural network based trigger primitive generator on a toy problem. The presented concept studies\footnote{\url{https://gitlab.cern.ch/dwinter/micae}} successively introduced realistic architectural detector constraints on the prototype and evaluated the impact on its performance. The produced models have not been tuned for optimal performance, which should be subject of future studies. In parallel to the work presented so far, the concept architecture has been implemented and trained also on simulated shower data\footnote{\url{https://gitlab.cern.ch/tquast/hgc_l1_trigger_autoencoder}}, by making use of the insights delivered by the studies of this thesis.\\
+\\
+In conclusion, the work presented in this thesis made important contributions to the HGCAL upgrade by providing a critical part of the software testing suite, by performing chip characterization measurements, and by presenting an alternative neural network based approach to trigger primitive generation inside HGCAL.
+
+\end{document}

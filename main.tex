@@ -1,0 +1,414 @@
+\documentclass[a4paper, 12pt, twoside]{article}
+\usepackage{libs}
+
+\renewcommand*{\figureautorefname}{Fig.}
+
+\pagestyle{fancy}
+\fancyhf{}
+\let\MakeUppercase\relax
+\fancyhead[LE]{\textit{\leftmark}} % even page no.
+\fancyhead[RO]{\textit{\rightmark}} % odd page no.
+\fancyfoot[LE,RO]{\thepage}
+\fancypagestyle{noheader}{ \renewcommand{\headrulewidth}{0pt} }
+
+\graphicspath{
+	{./img/01_intro/}
+	{./img/02_cern/}
+	{./img/03_hgcal/}
+	{./img/04_char/}
+	{./img/05_nn/}
+	{./img/06_summary/}
+}
+
+% \def\biblio{\bibliographystyle{plain}\bibliography{ref}} % make available in subfiles
+% \bibliography{ref}
+
+\newcommand{\HRule}[1]{\rule{\linewidth}{#1}}
+
+\begin{document}
+
+\pagenumbering{gobble}
+% \title{\uppercase{Readout Chip (HGCROCv2) Characterization and a Neural Network based Trigger Primitive Generator for the CMS High Granularity Calorimeter Upgrade}}
+% \author{Don Winter}
+
+% \date{\today}
+% \maketitle
+
+%titlepage
+\thispagestyle{empty}
+\begin{center}
+\begin{minipage}{\linewidth}
+    \centering
+%University logo
+    \includegraphics[width=0.3\linewidth]{hsc_logo.jpeg}\par
+    \vspace{3cm}
+%Thesis title
+		% {\uppercase{\Large \textbf{Readout Chip (HGCROCv2) Characterization and a neural network based approach to Trigger Primitive Generation for the CMS High Granularity Calorimeter Upgrade}\par}}
+    % \rule{0.4\linewidth}{0.15\linewidth}\par
+		\HRule{1pt} \\
+		{\Large \textbf{Readout Chip Characterization and Convolutional Autoencoder Trigger Concept for the CMS High Granularity Calorimeter Upgrade}\par}
+		\HRule{1pt} \\
+    \vspace{3cm}
+%Author's name
+		{\Large Don Winter\par}
+		{\Large \textit{Under supervision of}\par}
+		{\Large Prof. Dr. Michael Wick (HSC)\par}
+		{\Large Dr. Andr\'e David Tinoco Mendes (CERN)\par}
+		\vspace{3cm}
+		% {\Large Under supervision of: Prof. Dr. Michael Wick (HSC)\\and Dr. Andre David Tinoco Mendes (CERN)\par}
+    % \vspace{3cm}
+%Degree
+    {\Large Thesis submitted for the degree\\Bachelor of Engineering\par}
+    \vspace{3cm}
+%Date
+    {\Large February 2021}\par
+    % \vspace{3cm}
+\end{minipage}
+\end{center}
+\clearpage
+
+\newpage
+
+\thispagestyle{noheader}
+{\pagestyle{plain} \tableofcontents }
+\newpage
+
+\pagenumbering{arabic}
+
+\thispagestyle{noheader}
+\subfile{./chp/01_intro/chp.tex}
+\newpage
+\subfile{./chp/02_cern/chp.tex}
+\newpage
+\subfile{./chp/03_hgcal/chp.tex}
+\newpage
+\subfile{./chp/04_char/chp.tex}
+\newpage
+\subfile{./chp/05_nn/chp.tex}
+\newpage
+\subfile{./chp/06_summary/chp.tex}
+
+\newpage
+
+\begin{appendices}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+
+	\section{Gradient Descent and Backpropagation}\label{app:nn_train}
+Calculating the gradient of $\mathscr{L}$ with respect to each network parameter shows the impact that changing the parameters has on the loss. Thus, the training process is the optimization problem of minimizing the loss by varying the network parameters. The most effective way to do so is to change a parameter $p$ in the opposite direction of the loss's gradient with respect to $p$, i.e. in the direction of steepest (gradient) descent:
+\begin{equation}
+	p' = p - \eta \nabla_p\mathscr{L},
+\end{equation}
+with a (small) step size $\eta$, called learning rate. According to this update rule, the network is guaranteed to find a (local) minimum of the loss function. The process is illustrated in Fig.~\ref{fig:grad_desc}.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=8cm]{gradient_descent.png} 
+				\caption{Visualization of the gradient descent algorithm for a model with parameters $\Theta_0$ and $\Theta_1$. Figure reproduced from Ref. \cite{vlad20}.}
+				\label{fig:grad_desc}
+			\end{center}
+\end{figure}
+\\
+As it is desired for neural networks to generalize on a population of data describing a problem, the learning process needs to take a sufficiently large (representative) subset of the population into account. The network parameters are then updated via the average of gradients for all samples in this (training) set. Thereby, the network has to consider the whole population for each training step. Since this updating procedure requires a lot of calculation and memory usage, a variant called \textit{stochastic} gradient descent (SGD) is commonly used. SGD considers small, randomly selected, subsets of the training data (usually 32 or 64 samples per subset), called mini-batches to calculate the average gradient and update the parameters. Therefore, the network is able to learn faster, but also less precisely when converging towards the minimum.\\
+\\
+The gradients of the loss function are calculated by tracking the data transformations of the forward pass and subsequently calculating partial derivatives $\delta\mathscr{L}/\delta b$ and $\delta\mathscr{L}/\delta w$ at each node. As the transformation of a data point $\vec{x}$ in the network can mathematically be represented by function applications $a(\vec{x})$ at each layer, a succession of layers is simply a composition of functions $a_n\circ ...\circ a_1\circ a_0(\vec{x})$,  starting from the output layer, exploiting the chain rule of multi-variate calculus and the compositional nature of the network layers. This procedure, referred to as backward propagation is illustrated in Fig.~\ref{fig:bp}; the loss is labeled $E$, the activation $y_i$ and weights denoted as $\delta E/\delta w$. Note that biases are ignored.\\
+\begin{figure}[htp]
+			\begin{center}
+				\includegraphics[height=8cm]{backprop.png}
+				\caption{Illustration of forward and backward pass and the components of the computational graph used during neural network training process. Biases are ignored. Figure reproduced from Ref. \cite{baydin18}.}
+				\label{fig:bp}
+			\end{center}
+\end{figure}
+\\
+The backpropagation algorithm can be developed by starting from the loss function $\mathscr{L}$ and successively applying the chain rule. At the beginning, the error term of a neuron in the output layer $L$ is defined as
+\begin{equation}
+	\delta_i^L = \frac{\partial\mathscr{L}}{\partial z_i^L} = \frac{\partial\mathscr{L}}{\partial a_i^L}\frac{\partial a_i^L}{\partial z_i^L},
+	\label{eq:del}
+\end{equation}
+for the non-linear activation $a_{i}^{l} = \sigma(z_{i}^{l})$ and $z_{i}^{l}=\bm{W}^l\vec{a}^{l-1}+b_i$. Thus, the rule for computing the previous layer's error can be found:
+\begin{equation}
+	\delta_i^{L-1}=\frac{\partial\mathscr{L}}{\partial z_i^{L-1}}=\underbrace{\frac{\partial\mathscr{L}}{\partial a_i^L}\frac{\partial a_i^L}{\partial z_i^L}}_{\delta_i^L}\frac{\partial z_i^L}{\partial \vec{a}^{L-1}}\frac{\partial \vec{a}^{L-1}}{\partial \vec{z}^{L-1}}=\delta_i^L\bm{W}^{L}\sigma^\prime(\vec{z}^{L-1}).
+\end{equation}
+Thus for any layer $l$ one obtains:
+\begin{equation}
+	\delta_i^l = (\bm{W}^{l+1})^T\vec{\delta}^{l+1}\sigma^\prime(z^l).
+	\label{eq:del2}
+\end{equation}
+The partial derivatives of the loss with respect to the biases and weights of any layer can be found in a similar manner:
+\begin{equation}
+	\frac{\partial\mathscr{L}}{\partial w^l_{ij}} = \underbrace{\frac{\partial \mathscr{L}}{\partial a_i^l}\frac{\partial a_i^l}{\partial z_i^l}}_{\delta_i^l}\frac{\partial z_i^l}{\partial w^l_{ij}}=\delta_i^la_j^{l-1}
+\end{equation}
+for the weights and 
+\begin{equation}
+	\frac{\partial \mathscr{L}}{\partial b^l_i} = \underbrace{\frac{\partial \mathscr{L}}{\partial a_i^l}\frac{\partial a_i^l}{\partial z_i^l}}_{\delta_i^l}\underbrace{\frac{\partial z_i^l}{\partial b_i^l}}_{1} = \delta^l_i
+\end{equation}
+for the biases. Eq. \ref{eq:del} and Eq. \ref{eq:del2} can be written in vector form using the Hadamard product $\odot$ (element-wise multiplication) and the gradient of the loss with respect to an activation $\nabla_{a^L}\mathscr{L}$:
+\begin{equation}
+	\vec{\delta}^L= \nabla_{a^L} \mathscr{L}\odot \sigma'(\vec{z^{L}})
+\end{equation}
+\begin{equation}
+	\vec{\delta}^l = ((\textbf{W}^{l+1})^{T}\vec{\delta}^{l+1})\odot\sigma'(\vec{z}^l).
+\end{equation}
+
+	\section{Principal Component Analysis}\label{app:pca}
+While Fig.~\ref{fig:autoenc} schematically shows a deep undercomplete autoencoder, there exists an even simpler type with a single hidden layer. By considering linear neuron activation $\vec{a}(\vec{x})=\textbf{W}\vec{x}+\vec{b}$, it turns out that this simple network learns an encoding function similar to a dimensionality reduction technique called principal component analysis (PCA). In PCA the original feature axes of a data set are swapped with new ones (as linear combinations of the originals) that are aligned with the directions of greatest variance in the data \cite{pca}. Mathematically, this is accomplished by eigendecomposition $\textbf{C}=\textbf{P}\bm{\lambda}\textbf{P}^T$ of the unbiased covariance matrix \textbf{C} associated with data points $\vec{x}_i$ contained in the data set \textbf{X}. \textbf{C} is defined as
+\begin{equation}
+	\textbf{C}= \frac{1}{m-1}\textbf{X}\textbf{X}^T.
+\end{equation}
+The eigenvectors $\vec{v}_i$ corresponding to the largest eigenvalues $\lambda_i$ resemble the $n$ principal components, where $m$ is the number of input/output dimensions and $n\leq m$. The eigenvectors and eigenvalues can be found according to 
+\begin{equation}
+	\textbf{C}\cdot\textbf{P}=\textbf{P}\cdot \bm{\lambda},
+\end{equation}
+with $\textbf{P}$, the matrix containing the eigenvectors $\vec{v}_i$ in its columns and $\bm{\lambda}=\text{diag}(\lambda_i)$:
+\begin{gather}
+	\textbf{P}=
+		\begin{pmatrix} 
+			v_{1,1} & v_{2,1} & \cdots & v_{n,1}\\
+			v_{1,2} & v_{2,2} & \cdots & v_{n,2}\\
+			\vdots  & \vdots  & \ddots & \vdots \\
+			v_{1,m} & v_{2,m} & \cdots & v_{n,m}
+		\end{pmatrix} \text{ and }
+	\bm{\lambda}=
+		\begin{pmatrix} 
+			\lambda_{1} & 0 & \cdots & 0\\
+			0 & \lambda_{2} & \cdots & 0\\
+			\vdots  & \vdots  & \ddots & \vdots\\
+			0 & 0 & \cdots & \lambda_{n}
+		\end{pmatrix}.
+\end{gather}
+Thus, the transformation from $m$ inputs to $n$ latent features is accomplished by the transformation $e(\vec{x})=\textbf{P}^T\vec{x}$, and the reverse transformation into input space via $d(e(\vec{x}))=\textbf{P}\textbf{P}^T\vec{x}$. When $n\textless m$, then $\textbf{C}\neq \textbf{P}\bm{\lambda}\textbf{P}^T$ and $d(e(\vec{x}))$ cannot preserve all information anymore: $d(e(\vec{x}))\neq \vec{x}$. It is noteworthy to mention that for PCA to succeed principal features must exist in the data to begin with, i.e.~correlation in the features of the input data is presumed.\\
+\\
+Both PCA and the linear undercomplete autoencoder are looking for the same linear subspace. The only difference is that the basis vectors of autoencoders are not necessarily orthogonal, while the eigenvectors of the (symmetric) covariance matrix for PCA are by principle always orthogonal \cite{Goodfellow16}. Furthermore, PCA requires the eigenvectors to be normalized, thus yielding a unique solution while for autoencoder training there exists no such precondition.\\
+\\
+
+	\section{Neural network model architectures}\label{app:nn_arch}
+
+		\begin{table}[H]
+			\centering
+				\caption{\textbf{CAE}: Baseline convolutional autoencoder}
+			\begin{tabular}{ l | l | l | l | l | l}
+				\textbf{Layer/Operation} & \textbf{Kernel} & \textbf{Features} & \textbf{Stride} & \textbf{Padding} & \textbf{Activation}\\
+				\hline
+				\multicolumn{3}{l}{Input shape $28\times28\times1$}\\
+				\hline
+				Convolution 2D & $3\times3$ & 32 maps & $2\times2$ & same & ReLU \\
+				Convolution 2D & $3\times3$ & 64 maps & $2\times2$ & same & ReLU \\
+				Flatten to $16\times1$\\
+				Densely connected & N/A & 16 nodes & N/A & N/A & Sigmoid \\
+				\hline
+				Densely connected & N/A & 392 nodes & N/A & N/A & ReLU \\
+				Reshape to $7\times7\times8$ \\
+				Transposed convolution 2D & $3\times3$ & 64 maps & $2\times2$ & same & ReLU \\
+				Transposed convolution 2D & $3\times3$ & 32 maps & $2\times2$ & same & ReLU \\
+				Transposed convolution 2D & $3\times3$ & 1 map & $1\times1$ & same & Linear \\
+				\hline
+				\multicolumn{3}{l}{Output shape $28\times28\times1$} \\
+				\hline
+			\end{tabular}
+		\end{table}
+
+		\begin{table}[H]
+			\centering
+				\caption{\textbf{FCAE}: Fully convolutional autoencoder}
+			\begin{tabular}{ l | l | l | l | l | l}
+				\textbf{Layer/Operation} & \textbf{Kernel} & \textbf{Features} & \textbf{Stride} & \textbf{Padding} & \textbf{Activation}\\
+				\hline
+				\multicolumn{3}{l}{Input shape $28\times28\times1$}\\
+				\hline
+				Convolution 2D & $3\times3$ & 32 maps & $2\times2$ & same & ReLU \\
+				Convolution 2D & $3\times3$ & 64 maps & $2\times2$ & same & ReLU \\
+				Convolution 2D & $4\times4$ & 1 map & $1\times1$ & valid & Sigmoid \\
+				Flatten to $16\times1$\\
+				\hline
+				Reshape to $4\times4\times1$ \\
+				Transposed convolution 2D & $4\times4$ & 1 maps & $1\times1$ & valid & ReLU \\
+				Transposed convolution 2D & $3\times3$ & 64 maps & $2\times2$ & same & ReLU \\
+				Transposed convolution 2D & $3\times3$ & 32 maps & $2\times2$ & same & ReLU \\
+				Transposed convolution 2D & $3\times3$ & 1 map & $1\times1$ & same & Linear \\
+				\hline
+				\multicolumn{3}{l}{Output shape $28\times28\times1$} \\
+				\hline
+			\end{tabular}
+		\end{table}
+
+		\begin{table}[H]
+			\centering
+				\caption{\textbf{4S}: 4-Split}
+			\begin{tabular}{ l | l | l | l | l | l}
+				\textbf{Layer/Operation} & \textbf{Kernel} & \textbf{Features} & \textbf{Stride} & \textbf{Padding} & \textbf{Activation}\\
+				\hline
+				\multicolumn{3}{l}{Input shape $4\times14\times14\times1$} \\
+				\hline
+				Convolution 2D & $3\times3$ & 32 maps & $2\times2$ & same & ReLU \\
+				Convolution 2D & $3\times3$ & 64 maps & $2\times2$ & same & ReLU \\
+				Flatten to $4\times1$\\
+				Densely connected & N/A & 4 nodes & N/A & N/A & Sigmoid \\
+				\hline
+				\multicolumn{3}{l}{Concatenate from $4\times4$ to $16\times1$} \\
+				\hline
+				Densely connected & N/A & 392 nodes & N/A & N/A & ReLU \\
+				Reshape to $7\times7\times8$ \\
+				Transposed convolution 2D & $3\times3$ & 64 maps & $2\times2$ & same & ReLU \\
+				Transposed convolution 2D & $3\times3$ & 32 maps & $2\times2$ & same & ReLU \\
+				Transposed convolution 2D & $3\times3$ & 1 map & $2\times2$ & same & Linear \\
+				\hline
+				\multicolumn{3}{l}{Output shape $28\times28\times1$}\\
+				\hline
+			\end{tabular}
+		\end{table}
+
+		\begin{table}[H]
+			\centering
+				\caption{\textbf{F4S}: Fully convolutional 4-Split}
+			\begin{tabular}{ l | l | l | l | l | l}
+				\textbf{Layer/Operation} & \textbf{Kernel} & \textbf{Features} & \textbf{Stride} & \textbf{Padding} & \textbf{Activation}\\
+				\hline
+				\multicolumn{3}{l}{Input shape $4\times14\times14\times1$} \\
+				\hline
+				Convolution 2D & $3\times3$ & 32 maps & $2\times2$ & same & ReLU \\
+				Convolution 2D & $3\times3$ & 64 maps & $2\times2$ & same & ReLU \\
+				Convolution 2D & $3\times3$ & 1 map & $1\times1$ & valid & Sigmoid \\
+				Flatten to $4\times1$\\
+				\hline
+				\multicolumn{3}{l}{Concatenate from $4\times4$ to $16\times1$} \\
+				\hline
+				Reshape to $4\times4\times1$ \\
+				Transposed convolution 2D & $4\times4$ & 1 map & $1\times1$ & valid & ReLU \\
+				Transposed convolution 2D & $3\times3$ & 64 maps & $2\times2$ & same & ReLU \\
+				Transposed convolution 2D & $3\times3$ & 32 maps & $2\times2$ & same & ReLU \\
+				Transposed convolution 2D & $3\times3$ & 1 map & $1\times1$ & same & Linear \\
+				\hline
+				\multicolumn{3}{l}{Output shape $28\times28\times1$}\\
+				\hline
+			\end{tabular}
+		\end{table}
+
+		\begin{table}[H]
+			\centering
+				\caption{\textbf{16S}: 16-Split}
+			\begin{tabular}{ l | l | l | l | l | l}
+				\textbf{Layer/Operation} & \textbf{Kernel} & \textbf{Features} & \textbf{Stride} & \textbf{Padding} & \textbf{Activation}\\
+				\hline
+				\multicolumn{3}{l}{Input shape $16\times14\times14\times1$}\\
+				\hline
+				Convolution 2D & $3\times3$ & 32 maps & $2\times2$ & same & ReLU \\
+				Convolution 2D & $3\times3$ & 64 maps & $2\times2$ & same & ReLU \\
+				Flatten to $4\times1$\\
+				Densely connected & N/A & 4 nodes & N/A & N/A & Linear \\
+				Batch Normalization \\
+				Activation & N/A & N/A & N/A & N/A & Sigmoid \\
+				\hline
+				\multicolumn{5}{c}{\textit{Collect $16\times4$ outputs after 16 encoder iterations.}}\\
+				\multicolumn{5}{l}{Concatenate from $16\times4$ to $48\times1$ (\textit{16-Split encoder output})}\\
+				\hline
+				Densely connected & N/A & 1568 nodes & N/A & N/A & ReLU \\
+				Reshape to $14\times14\times8$ \\
+				Transposed convolution 2D & $3\times3$ & 64 maps & $2\times2$ & same & ReLU \\
+				Transposed convolution 2D & $3\times3$ & 32 maps & $2\times2$ & same & ReLU \\
+				Transposed convolution 2D & $3\times3$ & 1 map & $1\times1$ & same & Linear \\
+				\hline
+				\multicolumn{3}{l}{Output shape $56\times56\times1$}\\
+				\hline
+			\end{tabular}
+		\end{table}
+
+		\begin{table}[H]
+			\centering
+				\caption{\textbf{16S-C}: 16-Split classifier head}
+			\begin{tabular}{ l | l | l | l | l | l}
+				\textbf{Layer/Operation} & \textbf{Kernel} & \textbf{Features} & \textbf{Stride} & \textbf{Padding} & \textbf{Activation}\\
+				\hline
+				\multicolumn{3}{l}{Input shape $48\times1$ from \textit{16-Split encoder output}}\\
+				\hline
+				Densely connected & N/A & 256 nodes & N/A & N/A & ReLU \\
+				Densely connected & N/A & 128 nodes & N/A & N/A & ReLU \\
+				Densely connected & N/A & 64 nodes & N/A & N/A & ReLU \\
+				Densely connected & N/A & 10 nodes & N/A & N/A & Softmax \\
+				\hline
+				\multicolumn{3}{l}{Output shape $10\times1$}\\
+				\hline
+			\end{tabular}
+		\end{table}
+
+		\begin{table}[H]
+			\centering
+				\caption{\textbf{16S-R}: 16-Split regressor head}
+			\begin{tabular}{ l | l | l | l | l | l}
+				\textbf{Layer/Operation} & \textbf{Kernel} & \textbf{Features} & \textbf{Stride} & \textbf{Padding} & \textbf{Activation}\\
+				\hline
+				\multicolumn{3}{l}{Input shape $48\times1$ from \textit{16-Split encoder output}}\\
+				\hline
+				Densely connected & N/A & 256 nodes & N/A & N/A & ReLU \\
+				Densely connected & N/A & 128 nodes & N/A & N/A & ReLU \\
+				Densely connected & N/A & 64 nodes & N/A & N/A & ReLU \\
+				Densely connected & N/A & 2 nodes & N/A & N/A & Linear \\
+				\hline
+				\multicolumn{3}{l}{Output shape $2\times1$}\\
+				\hline
+			\end{tabular}
+		\end{table}
+
+	\section{Neural network training progression}\label{app:nn_loss}
+	\begin{figure}[H]
+		\centering
+		\subfloat[][]{\includegraphics[height=5.5cm]{4split_loss_freeWeights.png}\label{fig:loss4free}}
+		% \hspace{5mm}
+		\subfloat[][]{\includegraphics[height=5.5cm]{4split_loss_sharedWeights.png}\label{fig:loss4tied}}
+		\caption{4-split reconstruction loss for (a) free weights and (b) shared weights, trained over 50 epochs.}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\subfloat[][]{\includegraphics[height=5.5cm]{16split_reco_loss.png}\label{fig:16rloss}}
+		% \hspace{0.1mm}
+		\subfloat[][]{\includegraphics[height=5.5cm]{16split_regr_loss.png}\label{fig:16closs}}
+		\hspace{1mm}
+		\subfloat[][]{\includegraphics[height=5.5cm]{16split_classif_loss.png}\label{fig:16closs}}
+		% \hspace{0.1mm}
+		\subfloat[][]{\includegraphics[height=5.5cm]{16split_classif_acc.png}\label{fig:16closs}}
+		\caption{16-split (a) Reconstruction loss, (b) Regression loss, (c) Classification loss, and (d) classification accuracy, for a model trained over 50 epochs.}
+	\end{figure}
+
+	\section{16-Split weight distributions}\label{app:nn_weight}
+	\begin{figure}[H]
+		\begin{center}
+			\subfloat[][]{\includegraphics[height=6.0cm]{decoder_weights.png}}
+			\hspace{1mm}
+			\subfloat[][]{\includegraphics[height=6.0cm]{class_weights.png}}
+			\hspace{1mm}
+			\subfloat[][]{\includegraphics[height=6.0cm]{regr_weights.png}}
+			\caption{16-Split weight and bias distributions per layer. Encoder parameters and (a) Decoder, (b) Classifier, and (c) Regressor parameters, each individually trained for 50 epochs.}
+			\label{fig:weights}
+		\end{center}
+	\end{figure}
+
+\end{appendices}
+\newpage
+
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+% \bibliographystyle{unsrt}
+\bibliographystyle{plainurl}
+\bibliography{ref}
+
+\newpage
+\thispagestyle{empty}
+\section*{Danksagung (Acknowledgement)}
+An dieser Stelle möchte ich mich bei allen bedanken, die zur Verwirklichung dieser Arbeit beigetragen haben.\\
+\\
+Zunächst möchte ich mich bei Prof.\ Dr.\ Michael Wick für die Betreuung dieser Arbeit bedanken. Ihre freundliche Art und Unterstützung bereitete mir eine sehr angenehme, unkomplizierte und freie Arbeitsatmosphäre. Ich hoffe Sie haben genau so viel Freude beim Lesen dieser Thesis wie ich beim Schreiben hatte.\\
+\\
+On the same note, I would like to thank Dr.\ Andr\'e David Tinoco Mendes for his excellent supervision during my time at CERN. You were always there when I had questions, provided me with interesting new ideas and sparked new inspiration when needed. Your guidance had a major impact on the development of this thesis. I am very appreciative of having you as a supervisor.\\
+\\
+Thanks to Dr.\ Thorben Quast and Dr.\ Andr\'e David Tinoco Mendes for their valuable feedback and support in our weekly meetings. It was a very nice experience to discuss the results of the concept studies in Ch.~5 and to explore new ideas together.\\
+\\
+The following people gave valuable comments to various parts of this thesis draft:\\
+Dr.\ Andr\'e David Tinoco Mendes reviewed the entire thesis and provided feedback to structure, content, and grammar. He improved the overall quality of the draft thesis significantly. Dr.\ Thorben Quast has reviewed chapters 1--3 and 5--6 and gave stimulating feedback on structure and scientific accuracy. Especially his comments to introduction, summary and the particulars on the theory of neural networks proofed to be invaluable. Dr.\ Arnaud Steen reviewed Ch.~4. His comments on technical details helped to clarify many aspects of the testing setup. Thanks to Dr.\ David Barney for reviewing chapters 1--4 of this thesis and providing constructive criticism on content and language. Your input helped to make the statements of this thesis more clear and accessible.\\
+\\
+The chip testing efforts would not be possible without the collaboration of many people at CERN, DESY, FNAL, LLR, and the University of Minnesota. The weekly meetings on software development and DAQ and FE electronics provided valuable insights about the internal workings of many developed subsystems.\\
+\\
+For helping in the preparation, the execution, and the analysis of chip tests I'd like to thank Dr.\ Shilpi Jain, Dr.\ Arnaud Steen, Dr.\ Artur Lobanov, and Dr.\ Andr\'e David Tinoco Mendes.\\
+\\
+At last, I would like to thank Yu Han Chao for providing 3D models and illustrations for Chs.~3 and 5.
+\begin{CJK*}{UTF8}{bsmi}
+% 親愛的，謝謝你一直在我身邊。
+感謝您一直以來的支持和愛，親愛的。
+\clearpage\end{CJK*}
+
+\end{document}

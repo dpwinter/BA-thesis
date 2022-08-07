@@ -1,0 +1,67 @@
+This is BibTeX, Version 0.99d (TeX Live 2019/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+The style file: plainurl.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: ref.bib
+Warning--to sort, need author or key in wiki_sm
+Warning--to sort, need author or key in lhc_ff
+Warning--to sort, need author or key in cern_wiki
+Warning--to sort, need author or key in hl_lhc_schedule
+Warning--to sort, need author or key in solenoid
+Warning--to sort, need author or key in i2c
+Warning--to sort, need author or key in zmq
+Warning--to sort, need author or key in schematic:trophy
+Warning--to sort, need author or key in pca
+Warning--to sort, need author or key in convBlock
+Warning--to sort, need author or key in wiki_mnist
+Warning--empty journal in cms_overview
+Warning--empty publisher in jahr15
+Warning--empty booktitle in Steen2017
+Warning--empty journal in calo_rev
+You've used 64 entries,
+            2882 wiz_defined-function locations,
+            991 strings with 15987 characters,
+and the built_in function-call counts, 25162 in all, are:
+= -- 2700
+> -- 844
+< -- 1
++ -- 316
+- -- 250
+* -- 1260
+:= -- 3507
+add.period$ -- 251
+call.type$ -- 64
+change.case$ -- 310
+chr.to.int$ -- 0
+cite$ -- 79
+duplicate$ -- 672
+empty$ -- 2568
+format.name$ -- 250
+if$ -- 6792
+int.to.chr$ -- 0
+int.to.str$ -- 64
+missing$ -- 38
+newline$ -- 377
+num.names$ -- 102
+pop$ -- 737
+preamble$ -- 1
+purify$ -- 249
+quote$ -- 0
+skip$ -- 1857
+stack$ -- 0
+substring$ -- 568
+swap$ -- 86
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 236
+warning$ -- 15
+while$ -- 115
+width$ -- 66
+write$ -- 786
+(There were 15 warnings)
